@@ -1,0 +1,502 @@
+---
+openapi: "3.0.1"
+info:
+  title: "Peppol Box by Flexina API"
+  description: "RESTful API for sending invoices and credit notes via the Peppol network.\
+    \ This API allows you to send e-invoices in UBL XML format or as PDF with structured\
+    \ JSON data."
+  contact:
+    name: "Peppol Box Support"
+    url: "https://www.peppol-box.be"
+    email: "info@flexina.co"
+  version: "1.0"
+servers:
+  - url: "/portal"
+    description: "Peppol Box Production API"
+security:
+  - ApiKeyAuth: [ ]
+    ApiSecretAuth: [ ]
+    TenantIdAuth: [ ]
+    TestModeAuth: [ ]
+tags:
+  - name: "Peppol Box by Flexina API"
+    description: "External API for sending and receiving Peppol e-invoices"
+paths:
+  /external/api/peppol/send:
+    post:
+      tags:
+        - "Peppol Box by Flexina API"
+      summary: "Send UBL XML invoice or credit note via Peppol network"
+      description: "Send a pre-generated UBL XML invoice or credit note via the Peppol\
+        \ network. The XML must be valid according to Peppol BIS Billing 3.0 specification.\
+        \ \n\n**Important**: The response includes the original XML in the 'xmlContent'\
+        \ field when successful. Store and archive this XML for compliance and audit\
+        \ purposes."
+      operationId: "sendPeppolDocument"
+      parameters:
+        - name: "Flx-Api-Test-Mode"
+          in: "header"
+          description: "Test mode flag. When true, validates document without sending\
+          \ to Peppol network"
+          required: false
+          schema:
+            type: "boolean"
+            default: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "string"
+              description: "UBL XML content (invoice or credit note)"
+        required: true
+      responses:
+        "200":
+          description: "Document sent successfully. The 'xmlContent' field contains\
+            \ the UBL XML sent to Peppol."
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SendPeppolResult"
+        "401":
+          description: "Authentication failed"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SendPeppolResult"
+        "400":
+          description: "Invalid request or validation errors"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SendPeppolResult"
+      security:
+        - ApiSecretAuth: [ ]
+        - TenantIdAuth: [ ]
+        - ApiKeyAuth: [ ]
+  /external/api/peppol/send-pdf:
+    post:
+      tags:
+        - "Peppol Box by Flexina API"
+      summary: "Send invoice as PDF with JSON metadata via Peppol network"
+      description: "Send a PDF invoice (base64 encoded) along with structured JSON\
+        \ metadata via the Peppol network. This endpoint generates the required UBL\
+        \ XML from your JSON data and attaches the PDF. \n\n**Important**: The response\
+        \ includes the generated XML in the 'xmlContent' field. This XML represents\
+        \ the exact document sent over the Peppol network and should be stored and\
+        \ archived for compliance, audit, and future reference purposes. This XML\
+        \ serves as the legal electronic invoice format. \n\n**Requirements**: \n\
+        - PDF must be base64 encoded\n- Maximum PDF file size: 10MB\n- JSON metadata\
+        \ must include all required invoice fields"
+      operationId: "sendPdfDocument"
+      parameters:
+        - name: "isCreditNote"
+          in: "query"
+          description: "Set to true if this is a credit note instead of an invoice"
+          required: false
+          schema:
+            type: "boolean"
+            default: false
+        - name: "Flx-Api-Test-Mode"
+          in: "header"
+          description: "Test mode flag. When true, validates document without sending\
+          \ to Peppol network"
+          required: false
+          schema:
+            type: "boolean"
+            default: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PeppolInvoiceRequest"
+        required: true
+      responses:
+        "200":
+          description: "Document sent successfully. The 'xmlContent' field contains\
+            \ the UBL XML sent to Peppol - store this for your records."
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SendPeppolResult"
+        "400":
+          description: "Invalid request (missing PDF, invalid base64, invalid format,\
+            \ size exceeded, or validation errors)"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SendPeppolResult"
+        "500":
+          description: "Internal server error"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SendPeppolResult"
+        "401":
+          description: "Authentication failed"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SendPeppolResult"
+      security:
+        - ApiSecretAuth: [ ]
+        - TenantIdAuth: [ ]
+        - ApiKeyAuth: [ ]
+  /external/api/peppol/inbound/{documentId}/xml:
+    get:
+      tags:
+        - "Peppol Box by Flexina API"
+      summary: "Download received document XML"
+      description: "Download the UBL XML content of a specific received Peppol document.\
+        \ Returns the raw XML file as application/xml."
+      operationId: "downloadInboundDocumentXml"
+      parameters:
+        - name: "documentId"
+          in: "path"
+          description: "The unique identifier of the received document"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "403":
+          description: "No permission to access this document"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+                format: "byte"
+        "400":
+          description: "Invalid document ID"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+                format: "byte"
+        "404":
+          description: "Document not found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+                format: "byte"
+        "401":
+          description: "Authentication failed"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+                format: "byte"
+        "200":
+          description: "XML file downloaded successfully"
+          content:
+            application/xml: { }
+      security:
+        - ApiSecretAuth: [ ]
+        - TenantIdAuth: [ ]
+        - ApiKeyAuth: [ ]
+  /external/api/peppol/inbound/list:
+    get:
+      tags:
+        - "Peppol Box by Flexina API"
+      summary: "List received Peppol documents"
+      description: "Retrieve a list of documents received through the Peppol network.\
+        \ Optionally filter by date to get documents received after a specific timestamp."
+      operationId: "listInboundDocuments"
+      parameters:
+        - name: "fromDate"
+          in: "query"
+          description: "Filter documents received after this date (ISO 8601 format)"
+          required: false
+          schema:
+            type: "string"
+            format: "date-time"
+      responses:
+        "403":
+          description: "No Peppol identifier configured for this account"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  type: "object"
+                  additionalProperties:
+                    type: "object"
+        "401":
+          description: "Authentication failed"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  type: "object"
+                  additionalProperties:
+                    type: "object"
+        "200":
+          description: "List of inbound documents retrieved successfully"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  type: "object"
+                  additionalProperties:
+                    type: "object"
+      security:
+        - ApiSecretAuth: [ ]
+        - TenantIdAuth: [ ]
+        - ApiKeyAuth: [ ]
+  /external/api/peppol/health:
+    get:
+      tags:
+        - "Peppol Box by Flexina API"
+      summary: "Health check"
+      description: "Simple health check endpoint to verify API availability"
+      operationId: "health"
+      responses:
+        "200":
+          description: "API is healthy"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+      security:
+        - ApiSecretAuth: [ ]
+        - TenantIdAuth: [ ]
+        - ApiKeyAuth: [ ]
+components:
+  schemas:
+    SendPeppolResult:
+      type: "object"
+      properties:
+        errors:
+          type: "array"
+          items:
+            type: "string"
+        warnings:
+          type: "array"
+          items:
+            type: "string"
+        id:
+          type: "string"
+        status:
+          type: "string"
+        createdAt:
+          type: "string"
+        testMode:
+          type: "boolean"
+        xmlContent:
+          type: "string"
+    Address:
+      required:
+        - "city"
+        - "country"
+        - "postalCode"
+        - "street"
+      type: "object"
+      properties:
+        street:
+          type: "string"
+          description: "Street name and number"
+          example: "Main Street 123"
+        postalCode:
+          type: "string"
+          description: "Postal code"
+          example: "1000"
+        city:
+          type: "string"
+          description: "City name"
+          example: "Brussels"
+        country:
+          type: "string"
+          description: "Country code (ISO 3166-1 alpha-2)"
+          example: "BE"
+      description: "Address information"
+    CustomerInfo:
+      required:
+        - "address"
+        - "countryCode"
+        - "name"
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "Customer name"
+          example: "ACME Corporation"
+        vatNumber:
+          type: "string"
+          description: "Customer VAT number"
+          example: "BE0123456712"
+        peppolId:
+          type: "string"
+          description: "Customer Peppol ID"
+          example: "0208:BE0123456712"
+        countryCode:
+          type: "string"
+          description: "Customer country code (ISO 3166-1 alpha-2)"
+          example: "BE"
+        address:
+          $ref: "#/components/schemas/Address"
+      description: "Customer information"
+    DeliveryInfo:
+      type: "object"
+      properties:
+        deliveryDate:
+          type: "string"
+          description: "Delivery date (ISO format YYYY-MM-DD)"
+          example: "2024-01-20"
+        street:
+          type: "string"
+          description: "Delivery street"
+          example: "Delivery Street 456"
+        postalCode:
+          type: "string"
+          description: "Delivery postal code"
+          example: "2000"
+        city:
+          type: "string"
+          description: "Delivery city"
+          example: "Antwerp"
+        country:
+          type: "string"
+          description: "Delivery country code (ISO 3166-1 alpha-2)"
+          example: "BE"
+      description: "Delivery information"
+    InvoiceLine:
+      required:
+        - "description"
+        - "quantity"
+        - "unitPrice"
+      type: "object"
+      properties:
+        description:
+          type: "string"
+          description: "Line item description"
+          example: "Professional services"
+        itemCode:
+          type: "string"
+          description: "Item code or SKU"
+          example: "SRV-001"
+        quantity:
+          type: "number"
+          description: "Quantity"
+          format: "double"
+          example: 10.0
+        unit:
+          type: "string"
+          description: "Unit of measure code (UN/ECE Recommendation 20). Common values:\
+            \ C62=One/piece/unit, HUR=Hour, DAY=Day, WEE=Week, MON=Month, ANN=Year,\
+            \ MTR=Meter, KGM=Kilogram, LTR=Liter, MTK=Square meter, MTQ=Cubic meter,\
+            \ KWH=Kilowatt hour, TNE=Tonne (metric ton), SET=Set, EA=Each. See: https://docs.peppol.eu/poacc/billing/3.0/codelist/UNECERec20/"
+          example: "HUR"
+        unitPrice:
+          type: "number"
+          description: "Price per unit (excluding VAT)"
+          format: "double"
+          example: 50.0
+        discountPercent:
+          type: "number"
+          description: "Discount percentage"
+          format: "double"
+          example: 10.0
+        flexinaVatCode:
+          type: "string"
+          description: "VAT code configured in Flexina (e.g., 'TVA21', 'TVA10'). Use\
+            \ GET /external/api/peppol/refdata/vat-rates to retrieve available VAT\
+            \ codes. Either use 'flexinaVatCode' OR the combination of 'vatCode'+'vatRate'\
+            \ (deprecated)."
+          example: "TVA21"
+        vatCode:
+          type: "string"
+          description: "[DEPRECATED - Use flexinaVatCode instead] VAT category code\
+            \ (UNCL5305). Values: S=Standard rate, Z=Zero rated, E=Exempt from tax,\
+            \ AE=VAT Reverse Charge, K=VAT exempt for EEA intra-community supply,\
+            \ G=Free export item, O=Services outside scope of tax, L=Canary Islands\
+            \ general indirect tax, M=Tax for Ceuta and Melilla. See: https://docs.peppol.eu/poacc/billing/3.0/codelist/UNCL5305/"
+          example: "S"
+          deprecated: true
+        vatRate:
+          type: "number"
+          description: "[DEPRECATED - Use flexinaVatCode instead] VAT rate percentage\
+            \ (e.g., 21 for 21%). Use 0 for zero-rated or exempt items."
+          format: "double"
+          example: 21.0
+          deprecated: true
+      description: "Invoice line item"
+    PeppolInvoiceRequest:
+      required:
+        - "currency"
+        - "customer"
+        - "invoiceNumber"
+        - "issueDate"
+        - "lines"
+        - "pdfBase64"
+      type: "object"
+      properties:
+        pdfBase64:
+          type: "string"
+          description: "PDF file encoded in base64"
+          example: "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlL0NhdGFsb2cvUGFnZXMgMiAwIFI+PgplbmRvYmoKMiAwIG9iago8PC9UeXBlL1BhZ2VzL0NvdW50IDEvS2lkc1szIDAgUl0+PgplbmRvYmoKMyAwIG9iago8PC9UeXBlL1BhZ2UvTWVkaWFCb3hbMCAwIDYxMiA3OTJdL1BhcmVudCAyIDAgUi9SZXNvdXJjZXM8PD4+Pj4KZW5kb2JqCnhyZWYKMCA0CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMDYwIDAwMDAwIG4gCjAwMDAwMDAxMTggMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDQvUm9vdCAxIDAgUj4+CnN0YXJ0eHJlZgoyMDIKJSVFT0YK"
+        invoiceNumber:
+          type: "string"
+          description: "Invoice number"
+          example: "INV-2024-001"
+        issueDate:
+          type: "string"
+          description: "Invoice issue date (ISO format YYYY-MM-DD)"
+          example: "2024-01-15"
+        dueDate:
+          type: "string"
+          description: "Payment due date (ISO format YYYY-MM-DD)"
+          example: "2024-02-15"
+        currency:
+          type: "string"
+          description: "Currency code (ISO 4217)"
+          example: "EUR"
+        customer:
+          $ref: "#/components/schemas/CustomerInfo"
+        lines:
+          type: "array"
+          description: "Invoice line items"
+          items:
+            $ref: "#/components/schemas/InvoiceLine"
+        paymentMeans:
+          type: "string"
+          description: "Payment means code (UNCL4461). Common values: 1=Instrument\
+            \ not defined, 10=Cash, 20=Cheque, 30=Credit transfer, 31=Debit transfer,\
+            \ 42=Payment to bank account, 48=Bank card, 49=Direct debit, 58=SEPA credit\
+            \ transfer, 59=SEPA direct debit. See: https://docs.peppol.eu/poacc/billing/3.0/codelist/UNCL4461/"
+          example: "30"
+        notes:
+          type: "string"
+          description: "Additional notes or comments"
+        purchaseOrderReference:
+          type: "string"
+          description: "Purchase order reference"
+        delivery:
+          $ref: "#/components/schemas/DeliveryInfo"
+        language:
+          type: "string"
+          description: "Document language (ISO 639-1)"
+          example: "en"
+      description: "Invoice data with PDF in base64"
+  securitySchemes:
+    ApiKeyAuth:
+      type: "apiKey"
+      description: "Your Peppol Box API key"
+      name: "Flx-Box-Api-Key"
+      in: "header"
+    ApiSecretAuth:
+      type: "apiKey"
+      description: "Your Peppol Box API secret"
+      name: "Flx-Box-Api-Secret"
+      in: "header"
+    TenantIdAuth:
+      type: "apiKey"
+      description: "Your tenant identifier"
+      name: "Flx-Box-Api-Tenant-Id"
+      in: "header"
+    TestModeAuth:
+      type: "apiKey"
+      description: "Test mode flag (true/false). When true, documents are validated\
+        \ but not sent to Peppol network."
+      name: "Flx-Api-Test-Mode"
+      in: "header"
