@@ -7,15 +7,14 @@ object ProgramArguments {
 	
 	private lateinit var arguments: Map<Arguments, String>
 	
-	private val argumentKeyPattern = Regex("^--(.+)=.+$")
-	private val argumentValuePattern = Regex("^--.+=(.+)$")
+	private val argumentPattern = Regex("^--(.+)=(.+)$")
 	
 	fun getArgument(key: Arguments) = arguments[key] ?: throw NoSuchElementException("No value found for argument: $key")
 	
 	fun parseProgramArguments(args: Array<String>) {
 		arguments = args.associate { arg ->
-			val key = argumentKeyPattern.find(arg)?.groupValues?.get(1) ?: throw IllegalArgumentException("Invalid argument: $arg")
-			val value = argumentValuePattern.find(arg)?.groupValues?.get(1) ?: throw IllegalArgumentException("Invalid argument: $arg")
+			val key = argumentPattern.find(arg)?.groupValues?.get(1) ?: throw IllegalArgumentException("Invalid argument: $arg")
+			val value = argumentPattern.find(arg)?.groupValues?.get(2) ?: throw IllegalArgumentException("Invalid argument: $arg")
 			
 			Arguments.valueOf(key.uppercase()) to value
 		}
