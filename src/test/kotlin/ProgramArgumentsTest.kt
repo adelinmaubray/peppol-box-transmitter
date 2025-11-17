@@ -1,5 +1,3 @@
-package arguments
-
 import be.compuwave.peppol_box_transmitter.arguments.ProgramArguments
 import be.compuwave.peppol_box_transmitter.config.AppConfig
 import kotlin.test.Test
