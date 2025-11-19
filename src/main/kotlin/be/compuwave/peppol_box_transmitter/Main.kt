@@ -2,9 +2,8 @@ package be.compuwave.peppol_box_transmitter
 
 import be.compuwave.peppol_box_transmitter.arguments.Arguments
 import be.compuwave.peppol_box_transmitter.arguments.ProgramArguments
-import be.compuwave.peppol_box_transmitter.config.AppConfig
-import be.compuwave.peppol_box_transmitter.file.getFilesInInputDirectory
-import org.openapitools.client.apis.PeppolBoxByFlexinaAPIApi
+import be.compuwave.peppol_box_transmitter.transmitter.Transmitter
+import be.compuwave.peppol_box_transmitter.utils.getFilesInInputDirectory
 
 fun main(args: Array<String>) {
 	
@@ -12,8 +11,8 @@ fun main(args: Array<String>) {
 	ProgramArguments.parseProgramArguments(args)
 	
 	// Get files in input folder
-	val xmlFiles = getFilesInInputDirectory(ProgramArguments.getArgument(Arguments.INPUT_DIRECTORY))
+	val xmlFilesToHandle = getFilesInInputDirectory(ProgramArguments.getArgument(Arguments.INPUT_DIRECTORY))
 	
-	val api = PeppolBoxByFlexinaAPIApi(basePath = "")
-	api.sendPeppolDocument("", AppConfig.config.testMode)
+	// Send document to Peppol network
+	val xmlFileTreated = Transmitter.sendDocuments(xmlFilesToHandle)
 }

@@ -1,5 +1,6 @@
 package be.compuwave.peppol_box_transmitter.config
 
+import be.compuwave.peppol_box_transmitter.utils.printlnInRed
 import org.valiktor.ConstraintViolationException
 import org.valiktor.functions.isNotBlank
 import org.valiktor.functions.isWebsite
@@ -16,10 +17,10 @@ data class ConfigModel(val testMode: Boolean,
 			}
 		} catch (exception: ConstraintViolationException) {
 			throw exception.also {
-				println("Some arguments are not valid:")
+				printlnInRed("Some arguments are not valid:")
 				exception.constraintViolations
 					.map { "${it.property}: ${it.constraint.name}" }
-					.forEach(::println)
+					.forEach(::printlnInRed)
 			}
 		}
 	}

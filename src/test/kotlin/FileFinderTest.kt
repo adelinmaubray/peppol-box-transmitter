@@ -1,4 +1,4 @@
-import be.compuwave.peppol_box_transmitter.file.getFilesInInputDirectory
+import be.compuwave.peppol_box_transmitter.utils.getFilesInInputDirectory
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
