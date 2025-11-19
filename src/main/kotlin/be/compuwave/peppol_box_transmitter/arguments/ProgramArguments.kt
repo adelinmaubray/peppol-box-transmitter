@@ -25,7 +25,7 @@ object ProgramArguments {
 	
 	private val argumentPattern = Regex("^--(.+)=(.+)$")
 	
-	fun getArgument(key: Arguments) = arguments[key] ?: throw NoSuchElementException("No value found for argument: $key")
+	private fun getArgument(key: Arguments) = arguments[key] ?: throw NoSuchElementException("No value found for argument: $key")
 	
 	fun parseProgramArguments(args: Array<String>) {
 		arguments = args.associate { arg ->
@@ -38,6 +38,7 @@ object ProgramArguments {
 		AppConfig.config = ConfigModel(
 			testMode = getArgument(Arguments.TEST_MODE).toBoolean(),
 			inputDirectory = getArgument(Arguments.INPUT_DIRECTORY),
+			outputDirectory = getArgument(Arguments.OUTPUT_DIRECTORY),
 			baseUrl = getArgument(Arguments.BASE_URL)
 		)
 		

@@ -8,11 +8,13 @@ import org.valiktor.validate
 
 data class ConfigModel(val testMode: Boolean,
 					   val inputDirectory: String,
+					   val outputDirectory: String = "$inputDirectory/sent",
 					   val baseUrl: String) {
 	init {
 		try {
 			validate(this) {
 				validate(ConfigModel::inputDirectory).isNotBlank()
+				validate(ConfigModel::outputDirectory).isNotBlank()
 				validate(ConfigModel::baseUrl).isNotBlank().isWebsite()
 			}
 		} catch (exception: ConstraintViolationException) {

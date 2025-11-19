@@ -10,6 +10,7 @@ class ConfigModelTest {
 	companion object {
 		private const val VALID_TEST_MODE = true
 		private const val VALID_INPUT_DIRECTORY = "src/main/resources/input"
+		private const val VALID_OUTPUT_DIRECTORY = "src/main/resources/output"
 		private const val VALID_BASE_URL = "https://www.jetbrains.com"
 	}
 	
@@ -20,7 +21,20 @@ class ConfigModelTest {
 				testMode = VALID_TEST_MODE,
 				inputDirectory = VALID_INPUT_DIRECTORY,
 				baseUrl = VALID_BASE_URL
-			)
+			).also {
+				assertEquals(it.outputDirectory, "${it.inputDirectory}/sent")
+			}
+		}
+		
+		assertDoesNotThrow {
+			ConfigModel(
+				testMode = VALID_TEST_MODE,
+				inputDirectory = VALID_INPUT_DIRECTORY,
+				outputDirectory = VALID_OUTPUT_DIRECTORY,
+				baseUrl = VALID_BASE_URL
+			).also {
+				assertEquals(it.outputDirectory, VALID_OUTPUT_DIRECTORY)
+			}
 		}
 	}
 	
@@ -35,6 +49,21 @@ class ConfigModelTest {
 		}
 		
 		assertEquals(ConfigModel::inputDirectory.name, exception.constraintViolations.first().property)
+		assertEquals("NotBlank", exception.constraintViolations.first().constraint.name)
+	}
+	
+	@Test
+	fun `output directory is blank`() {
+		val exception = assertFailsWith<ConstraintViolationException> {
+			ConfigModel(
+				testMode = VALID_TEST_MODE,
+				baseUrl = VALID_BASE_URL,
+				inputDirectory = VALID_INPUT_DIRECTORY,
+				outputDirectory = ""
+			)
+		}
+		
+		assertEquals(ConfigModel::outputDirectory.name, exception.constraintViolations.first().property)
 		assertEquals("NotBlank", exception.constraintViolations.first().constraint.name)
 	}
 	

@@ -20,17 +20,18 @@ fun getFilesInInputDirectory(directoryPath: String): Set<File> {
 		}
 }
 
-fun moveFileToAnotherFolder(fileToMove: File, newDirectory: String) {
+fun moveFileToAnotherFolder(fileToMove: File, newDirectory: String): File {
 	
 	val destinationDirectory = File(newDirectory)
-	destinationDirectory.mkdir()
+	destinationDirectory.mkdirs()
 	
 	val newFile = File(destinationDirectory, fileToMove.name)
 	
 	try {
 		Files.move(fileToMove.toPath(), newFile.toPath())
+		return newFile
 	} catch (e: Exception) {
-		println("Error moving file ${fileToMove.name} to $newDirectory")
+		printlnInRed("Error moving file ${fileToMove.name} to $newDirectory")
 		throw e
 	}
 }
