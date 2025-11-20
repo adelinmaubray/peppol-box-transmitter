@@ -2,6 +2,7 @@ package be.compuwave.peppol_box_transmitter.arguments
 
 import be.compuwave.peppol_box_transmitter.config.AppConfig
 import be.compuwave.peppol_box_transmitter.config.ConfigModel
+import be.compuwave.peppol_box_transmitter.property.ApplicationProperty
 import be.compuwave.peppol_box_transmitter.utils.printInCyan
 import be.compuwave.peppol_box_transmitter.utils.printWithTab
 
@@ -21,29 +22,29 @@ import be.compuwave.peppol_box_transmitter.utils.printWithTab
  */
 object ProgramArguments {
 	
-	private lateinit var arguments: Map<Arguments, String>
+	private lateinit var applicationProperty: Map<ApplicationProperty, String>
 	
 	private val argumentPattern = Regex("^--(.+)=(.+)$")
 	
-	private fun getArgument(key: Arguments) = arguments[key] ?: throw NoSuchElementException("No value found for argument: $key")
+	private fun getArgument(key: ApplicationProperty) = applicationProperty[key] ?: throw NoSuchElementException("No value found for argument: $key")
 	
 	fun parseProgramArguments(args: Array<String>) {
-		arguments = args.associate { arg ->
+		applicationProperty = args.associate { arg ->
 			val key = argumentPattern.find(arg)?.groupValues?.get(1) ?: throw IllegalArgumentException("Invalid argument: $arg")
 			val value = argumentPattern.find(arg)?.groupValues?.get(2) ?: throw IllegalArgumentException("Invalid argument: $arg")
 			
-			Arguments.valueOf(key.uppercase()) to value
+			ApplicationProperty.valueOf(key.uppercase()) to value
 		}
 		
 		AppConfig.config = ConfigModel(
-			testMode = getArgument(Arguments.TEST_MODE).toBoolean(),
-			inputDirectory = getArgument(Arguments.INPUT_DIRECTORY),
-			outputDirectory = getArgument(Arguments.OUTPUT_DIRECTORY),
-			baseUrl = getArgument(Arguments.BASE_URL)
+			testMode = getArgument(ApplicationProperty.TEST_MODE).toBoolean(),
+			inputDirectory = getArgument(ApplicationProperty.INPUT_DIRECTORY),
+			outputDirectory = getArgument(ApplicationProperty.OUTPUT_DIRECTORY),
+			baseUrl = getArgument(ApplicationProperty.BASE_URL)
 		)
 		
 		printInCyan("Program arguments parsed:")
-		arguments.forEach { printWithTab("${it.key} = ${it.value}") }
+		applicationProperty.forEach { printWithTab("${it.key} = ${it.value}") }
 		println()
 	}
 }

@@ -8,6 +8,9 @@ import be.compuwave.peppol_box_transmitter.utils.moveFileToAnotherFolder
 
 fun main(args: Array<String>) {
 	
+	// TODO read .property files
+	// init config with those properties
+	
 	// Parse and validate program arguments
 	ProgramArguments.parseProgramArguments(args)
 	
