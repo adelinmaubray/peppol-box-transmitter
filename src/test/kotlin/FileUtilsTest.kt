@@ -1,12 +1,13 @@
 import be.compuwave.peppol_box_transmitter.utils.getFilesInInputDirectory
+import be.compuwave.peppol_box_transmitter.utils.getPropertyFile
 import be.compuwave.peppol_box_transmitter.utils.moveFileToAnotherFolder
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.assertDoesNotThrow
 import java.io.File
-import java.nio.file.NoSuchFileException
 import kotlin.test.*
 
-class FileFinderTest {
+class FileUtilsTest {
 	
 	lateinit var targetFolder: String
 	
@@ -20,6 +21,21 @@ class FileFinderTest {
 	@AfterEach
 	fun tearDown() {
 		File(targetFolder).deleteRecursively()
+	}
+	
+	@Test
+	fun `the property file is valid`() {
+		assertDoesNotThrow { getPropertyFile("src/test/resources/properties/valid.properties") }
+	}
+	
+	@Test
+	fun `the provided file is not a 'properties'`() {
+		assertFailsWith<IllegalArgumentException> { getPropertyFile("src/test/resources/files/file1.xml") }
+	}
+	
+	@Test
+	fun `propertyFile does not exist`() {
+		assertFailsWith<NoSuchFileException> { getPropertyFile("does/not/exist.properties") }
 	}
 	
 	@Test
@@ -67,6 +83,6 @@ class FileFinderTest {
 	
 	@Test
 	fun `move a file that does not exist`() {
-		assertFailsWith<NoSuchFileException> { moveFileToAnotherFolder(File("does/not/exist"), "target/test") }
+		assertFailsWith<java.nio.file.NoSuchFileException> { moveFileToAnotherFolder(File("does/not/exist"), "target/test") }
 	}
 }

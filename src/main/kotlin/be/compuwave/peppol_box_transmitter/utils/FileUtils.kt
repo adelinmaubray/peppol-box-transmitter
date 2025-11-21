@@ -3,6 +3,18 @@ package be.compuwave.peppol_box_transmitter.utils
 import java.io.File
 import java.nio.file.Files
 
+fun getPropertyFile(propertyFilePath: String): File {
+	val propertyFile = File(propertyFilePath)
+	
+	if (propertyFile.extension != "properties")
+		throw IllegalArgumentException("The provided property file does not have the '.properties' extension: ${propertyFile.name}'")
+	
+	return if (propertyFile.exists()) propertyFile else throw NoSuchFileException(
+		file = propertyFile,
+		reason = "Property file does not exist: $propertyFilePath"
+	)
+}
+
 fun getFilesInInputDirectory(directoryPath: String): Set<File> {
 	
 	val inputDirectory = File(directoryPath)

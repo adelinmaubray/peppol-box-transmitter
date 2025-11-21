@@ -1,8 +1,5 @@
 package be.compuwave.peppol_box_transmitter.arguments
 
-import be.compuwave.peppol_box_transmitter.config.AppConfig
-import be.compuwave.peppol_box_transmitter.config.ConfigModel
-import be.compuwave.peppol_box_transmitter.property.ApplicationProperty
 import be.compuwave.peppol_box_transmitter.utils.printInCyan
 import be.compuwave.peppol_box_transmitter.utils.printWithTab
 
@@ -22,29 +19,38 @@ import be.compuwave.peppol_box_transmitter.utils.printWithTab
  */
 object ProgramArguments {
 	
-	private lateinit var applicationProperty: Map<ApplicationProperty, String>
+	enum class ProgramArgument {
+		PROPERTIES
+	}
 	
+	private lateinit var parsedArguments: Map<ProgramArgument, String>
 	private val argumentPattern = Regex("^--(.+)=(.+)$")
 	
-	private fun getArgument(key: ApplicationProperty) = applicationProperty[key] ?: throw NoSuchElementException("No value found for argument: $key")
+	private fun getArgument(key: ProgramArgument) = parsedArguments[key] ?: throw NoSuchElementException("No value found for argument: $key")
 	
 	fun parseProgramArguments(args: Array<String>) {
-		applicationProperty = args.associate { arg ->
+		parsedArguments = args.associate { arg ->
 			val key = argumentPattern.find(arg)?.groupValues?.get(1) ?: throw IllegalArgumentException("Invalid argument: $arg")
 			val value = argumentPattern.find(arg)?.groupValues?.get(2) ?: throw IllegalArgumentException("Invalid argument: $arg")
 			
-			ApplicationProperty.valueOf(key.uppercase()) to value
+			ProgramArgument.valueOf(key.uppercase()) to value
 		}
 		
-		AppConfig.config = ConfigModel(
-			testMode = getArgument(ApplicationProperty.TEST_MODE).toBoolean(),
-			inputDirectory = getArgument(ApplicationProperty.INPUT_DIRECTORY),
-			outputDirectory = getArgument(ApplicationProperty.OUTPUT_DIRECTORY),
-			baseUrl = getArgument(ApplicationProperty.BASE_URL)
-		)
+		validateArguments()
 		
 		printInCyan("Program arguments parsed:")
-		applicationProperty.forEach { printWithTab("${it.key} = ${it.value}") }
+		parsedArguments.forEach { printWithTab("${it.key} = ${it.value}") }
 		println()
 	}
+	
+	private fun validateArguments() {
+		// check all arguments are present
+		// and are not empty
+		ProgramArgument.entries.forEach {
+			if (!parsedArguments.containsKey(it)) throw IllegalArgumentException("Missing argument: ${it.name}")
+			if (parsedArguments[it].isNullOrBlank()) throw IllegalArgumentException("Argument ${it.name} is blank")
+		}
+	}
+	
+	fun getPropertyFilePath() = getArgument(ProgramArgument.PROPERTIES)
 }
