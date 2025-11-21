@@ -2,7 +2,7 @@
 	<configuration default="false" name="MainKt" type="JetRunConfigurationType" nameIsGenerated="true">
 		<option name="MAIN_CLASS_NAME" value="be.compuwave.peppol_box_transmitter.MainKt"/>
 		<module name="peppol-box-transmitter"/>
-		<option name="PROGRAM_PARAMETERS" value="--test_mode=true --input_directory=src/main/resources/input --base_url=https://www.jetbrains.com"/>
+		<option name="PROGRAM_PARAMETERS" value="--properties=src/test/resources/properties/valid.properties"/>
 		<shortenClasspath name="NONE"/>
 		<method v="2">
 			<option name="Make" enabled="true"/>

@@ -4,6 +4,6 @@ import be.compuwave.peppol_box_transmitter.config.ConfigModel
 
 fun provideValidConfig() = ConfigModel(
 	testMode = true,
-	inputDirectory = "src/test/resources/files",
+	inputDirectory = "target/test/files",
 	baseUrl = "https://dummy.org"
 )

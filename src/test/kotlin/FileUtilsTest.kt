@@ -9,18 +9,18 @@ import kotlin.test.*
 
 class FileUtilsTest {
 	
-	lateinit var targetFolder: String
+	companion object {
+		val targetFolder = File("target/test")
+	}
 	
 	@BeforeEach
 	fun setUp() {
-		targetFolder = "target/test"
-		File(targetFolder).mkdirs()
-		File(targetFolder).mkdirs()
+		targetFolder.mkdirs()
 	}
 	
 	@AfterEach
 	fun tearDown() {
-		File(targetFolder).deleteRecursively()
+		targetFolder.deleteRecursively()
 	}
 	
 	@Test
