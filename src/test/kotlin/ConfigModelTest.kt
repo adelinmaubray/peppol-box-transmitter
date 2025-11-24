@@ -12,6 +12,9 @@ class ConfigModelTest {
 		private const val VALID_INPUT_DIRECTORY = "src/main/resources/input"
 		private const val VALID_OUTPUT_DIRECTORY = "src/main/resources/output"
 		private const val VALID_BASE_URL = "https://www.jetbrains.com"
+		private const val VALID_TENANT_ID = "tenant-id"
+		private const val VALID_API_KEY = "api-key"
+		private const val VALID_API_SECRET = "api-secret"
 	}
 	
 	@Test
@@ -20,7 +23,10 @@ class ConfigModelTest {
 			ConfigModel(
 				testMode = VALID_TEST_MODE,
 				inputDirectory = VALID_INPUT_DIRECTORY,
-				baseUrl = VALID_BASE_URL
+				baseUrl = VALID_BASE_URL,
+				tenantId = VALID_TENANT_ID,
+				apiKey = VALID_API_KEY,
+				apiSecret = VALID_API_SECRET
 			).also {
 				assertEquals(it.outputDirectory, "${it.inputDirectory}/sent")
 			}
@@ -31,7 +37,10 @@ class ConfigModelTest {
 				testMode = VALID_TEST_MODE,
 				inputDirectory = VALID_INPUT_DIRECTORY,
 				outputDirectory = VALID_OUTPUT_DIRECTORY,
-				baseUrl = VALID_BASE_URL
+				baseUrl = VALID_BASE_URL,
+				tenantId = VALID_TENANT_ID,
+				apiKey = VALID_API_KEY,
+				apiSecret = VALID_API_SECRET
 			).also {
 				assertEquals(it.outputDirectory, VALID_OUTPUT_DIRECTORY)
 			}
@@ -44,7 +53,10 @@ class ConfigModelTest {
 			ConfigModel(
 				testMode = VALID_TEST_MODE,
 				baseUrl = VALID_BASE_URL,
-				inputDirectory = ""
+				inputDirectory = "",
+				tenantId = VALID_TENANT_ID,
+				apiKey = VALID_API_KEY,
+				apiSecret = VALID_API_SECRET
 			)
 		}
 		
@@ -59,7 +71,10 @@ class ConfigModelTest {
 				testMode = VALID_TEST_MODE,
 				baseUrl = VALID_BASE_URL,
 				inputDirectory = VALID_INPUT_DIRECTORY,
-				outputDirectory = ""
+				outputDirectory = "",
+				tenantId = VALID_TENANT_ID,
+				apiKey = VALID_API_KEY,
+				apiSecret = VALID_API_SECRET
 			)
 		}
 		
@@ -73,7 +88,10 @@ class ConfigModelTest {
 			ConfigModel(
 				testMode = VALID_TEST_MODE,
 				inputDirectory = VALID_INPUT_DIRECTORY,
-				baseUrl = ""
+				baseUrl = "",
+				tenantId = VALID_TENANT_ID,
+				apiKey = VALID_API_KEY,
+				apiSecret = VALID_API_SECRET
 			)
 		}
 		
@@ -87,11 +105,65 @@ class ConfigModelTest {
 			ConfigModel(
 				testMode = VALID_TEST_MODE,
 				inputDirectory = VALID_INPUT_DIRECTORY,
-				baseUrl = "dummy"
+				baseUrl = "dummy",
+				tenantId = VALID_TENANT_ID,
+				apiKey = VALID_API_KEY,
+				apiSecret = VALID_API_SECRET
 			)
 		}
 		
 		assertEquals(ConfigModel::baseUrl.name, exception.constraintViolations.first().property)
 		assertEquals("Website", exception.constraintViolations.first().constraint.name)
+	}
+	
+	@Test
+	fun `tenant id is blank`() {
+		val exception = assertFailsWith<ConstraintViolationException> {
+			ConfigModel(
+				testMode = VALID_TEST_MODE,
+				inputDirectory = VALID_INPUT_DIRECTORY,
+				baseUrl = VALID_BASE_URL,
+				tenantId = "",
+				apiKey = VALID_API_KEY,
+				apiSecret = VALID_API_SECRET
+			)
+		}
+		
+		assertEquals(ConfigModel::tenantId.name, exception.constraintViolations.first().property)
+		assertEquals("NotBlank", exception.constraintViolations.first().constraint.name)
+	}
+	
+	@Test
+	fun `api key is blank`() {
+		val exception = assertFailsWith<ConstraintViolationException> {
+			ConfigModel(
+				testMode = VALID_TEST_MODE,
+				inputDirectory = VALID_INPUT_DIRECTORY,
+				baseUrl = VALID_BASE_URL,
+				tenantId = VALID_TENANT_ID,
+				apiKey = "",
+				apiSecret = VALID_API_SECRET
+			)
+		}
+		
+		assertEquals(ConfigModel::apiKey.name, exception.constraintViolations.first().property)
+		assertEquals("NotBlank", exception.constraintViolations.first().constraint.name)
+	}
+	
+	@Test
+	fun `api secret is blank`() {
+		val exception = assertFailsWith<ConstraintViolationException> {
+			ConfigModel(
+				testMode = VALID_TEST_MODE,
+				inputDirectory = VALID_INPUT_DIRECTORY,
+				baseUrl = VALID_BASE_URL,
+				tenantId = VALID_TENANT_ID,
+				apiKey = VALID_API_KEY,
+				apiSecret = ""
+			)
+		}
+		
+		assertEquals(ConfigModel::apiSecret.name, exception.constraintViolations.first().property)
+		assertEquals("NotBlank", exception.constraintViolations.first().constraint.name)
 	}
 }

@@ -29,7 +29,10 @@ object PropertyParser {
 			testMode = properties.getProperty(ApplicationProperty.TEST_MODE).toBoolean(),
 			inputDirectory = properties.getProperty(ApplicationProperty.INPUT_DIRECTORY),
 			outputDirectory = properties.getProperty(ApplicationProperty.OUTPUT_DIRECTORY),
-			baseUrl = properties.getProperty(ApplicationProperty.BASE_URL)
+			baseUrl = properties.getProperty(ApplicationProperty.BASE_URL),
+			tenantId = properties.getProperty(ApplicationProperty.TENANT_ID),
+			apiKey = properties.getProperty(ApplicationProperty.API_KEY),
+			apiSecret = properties.getProperty(ApplicationProperty.API_SECRET)
 		)
 	}
 }

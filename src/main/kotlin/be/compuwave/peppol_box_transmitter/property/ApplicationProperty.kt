@@ -5,4 +5,7 @@ enum class ApplicationProperty {
 	INPUT_DIRECTORY,
 	OUTPUT_DIRECTORY,
 	BASE_URL,
+	TENANT_ID,
+	API_KEY,
+	API_SECRET
 }

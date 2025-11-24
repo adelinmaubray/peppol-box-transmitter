@@ -8,15 +8,21 @@ import org.valiktor.functions.isWebsite
 import org.valiktor.validate
 
 data class ConfigModel(val testMode: Boolean,
+					   val baseUrl: String,
 					   val inputDirectory: String,
 					   val outputDirectory: String = "$inputDirectory/sent",
-					   val baseUrl: String) {
+					   val tenantId: String,
+					   val apiKey: String,
+					   val apiSecret: String) {
 	init {
 		try {
 			validate(this) {
 				validate(ConfigModel::inputDirectory).isNotBlank()
 				validate(ConfigModel::outputDirectory).isNotBlank()
 				validate(ConfigModel::baseUrl).isNotBlank().isWebsite()
+				validate(ConfigModel::tenantId).isNotBlank()
+				validate(ConfigModel::apiKey).isNotBlank()
+				validate(ConfigModel::apiSecret).isNotBlank()
 			}
 		} catch (exception: ConstraintViolationException) {
 			throw exception.also {
