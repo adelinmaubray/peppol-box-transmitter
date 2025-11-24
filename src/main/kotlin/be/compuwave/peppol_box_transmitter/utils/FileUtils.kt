@@ -18,7 +18,7 @@ fun getPropertyFile(propertyFilePath: String): File {
 fun getFilesInInputDirectory(directoryPath: String): Set<File> {
 	
 	val inputDirectory = File(directoryPath)
-	if (!inputDirectory.exists()) throw IllegalArgumentException("Input directory does not exist: $directoryPath")
+	if (!inputDirectory.exists()) throw IllegalArgumentException("Input directory does not exist: ${inputDirectory.absolutePath}")
 	
 	return inputDirectory.walk()
 		.filter { it.isFile }
@@ -41,6 +41,7 @@ fun moveFileToAnotherFolder(fileToMove: File, newDirectory: String): File {
 	
 	try {
 		Files.move(fileToMove.toPath(), newFile.toPath())
+		printlnInRed("File ${fileToMove.name} moved to $newDirectory")
 		return newFile
 	} catch (e: Exception) {
 		printlnInRed("Error moving file ${fileToMove.name} to $newDirectory")

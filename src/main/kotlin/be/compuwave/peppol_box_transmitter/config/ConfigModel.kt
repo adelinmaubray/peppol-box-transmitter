@@ -1,5 +1,6 @@
 package be.compuwave.peppol_box_transmitter.config
 
+import be.compuwave.peppol_box_transmitter.utils.printWithTab
 import be.compuwave.peppol_box_transmitter.utils.printlnInRed
 import org.valiktor.ConstraintViolationException
 import org.valiktor.functions.isNotBlank
@@ -22,7 +23,7 @@ data class ConfigModel(val testMode: Boolean,
 				printlnInRed("Some arguments are not valid:")
 				exception.constraintViolations
 					.map { "${it.property}: ${it.constraint.name}" }
-					.forEach(::printlnInRed)
+					.forEach(::printWithTab)
 			}
 		}
 	}

@@ -47,8 +47,8 @@ object ProgramArguments {
 		// check all arguments are present
 		// and are not empty
 		ProgramArgument.entries.forEach {
-			if (!parsedArguments.containsKey(it)) throw IllegalArgumentException("Missing argument: ${it.name}")
-			if (parsedArguments[it].isNullOrBlank()) throw IllegalArgumentException("Argument ${it.name} is blank")
+			if (!parsedArguments.containsKey(it)) throw IllegalArgumentException("Missing argument: --${it.name.lowercase()}")
+			if (parsedArguments[it].isNullOrBlank()) throw IllegalArgumentException("Argument ${it.name.lowercase()} is blank")
 		}
 	}
 	
