@@ -1,0 +1,86 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Bump version, build, tag, and upload artifact
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Determine next minor version
+        id: bump
+        shell: bash
+        run: |
+          set -euo pipefail
+          CURRENT_VERSION=$(mvn -q -DforceStdout -Dexpression=project.version help:evaluate)
+          echo "Current version is $CURRENT_VERSION"
+          CLEAN_VERSION=${CURRENT_VERSION/-SNAPSHOT/}
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CLEAN_VERSION"
+          if [[ -z "${MAJOR}" || -z "${MINOR}" || -z "${PATCH}" ]]; then
+            echo "Unable to parse version: $CLEAN_VERSION" >&2
+            exit 1
+          fi
+          NEXT_MINOR=$((10#${MINOR} + 1))
+          NEW_VERSION="${MAJOR}.${NEXT_MINOR}.0"
+          echo "Bumping to $NEW_VERSION"
+          echo "new_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+      - name: Set project version
+        run: mvn -B -ntp versions:set -DnewVersion=${{ steps.bump.outputs.new_version }} -DgenerateBackupPoms=false
+      - name: Build package
+        run: mvn -B -ntp package
+      - name: Upload ZIP artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: peppol-box-transmitter-${{ steps.bump.outputs.new_version }}-zip
+          path: |
+            target/**/*.zip
+            target/*.zip
+          if-no-files-found: error
+          compression-level: 0
+      - name: Configure Git
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+      - name: Commit version bump [skip ci]
+        env:
+          VERSION: ${{ steps.bump.outputs.new_version }}
+        run: |
+          if ! git diff --quiet; then
+            git add pom.xml
+            git commit -m "chore(release): ${VERSION} [skip ci]"
+            git push
+          else
+            echo "No changes to commit"
+          fi
+      - name: Create and push tag
+        env:
+          VERSION: ${{ steps.bump.outputs.new_version }}
+        run: |
+          # Create tag with the version number and push
+          if git rev-parse "$VERSION" >/dev/null 2>&1; then
+            echo "Tag $VERSION already exists, skipping"
+          else
+            git tag "$VERSION"
+            git push origin "$VERSION"
+          fi
