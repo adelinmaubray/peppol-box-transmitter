@@ -23,6 +23,7 @@ fun main(args: Array<String>) {
 		// Send documents to Peppol network
 		// And move successful files to output folder
 		Transmitter.sendDocuments(getFilesInInputDirectory(AppConfig.config.inputDirectory))
+			.also { println() }
 			.forEach { moveFileToAnotherFolder(it, AppConfig.config.outputDirectory) }
 	} catch (exception: Exception) {
 		printlnInRed(exception.message)

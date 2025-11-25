@@ -13,10 +13,6 @@ object ApiProxy {
 		ApiClient.apiKey["Flx-Box-Api-Key"] = AppConfig.config.apiKey
 		ApiClient.apiKey["Flx-Box-Api-Secret"] = AppConfig.config.apiSecret
 		ApiClient.apiKey["Flx-Box-Api-Tenant-Id"] = AppConfig.config.tenantId
-
-//		api.setApiKey("ApiKeyAuth", AppConfig.config.apiKey)
-//		api.setApiKey("ApiSecretAuth", AppConfig.config.apiSecret)
-//		api.setApiKey("TenantIdAuth", AppConfig.config.tenantId)
 		
 		api
 	}

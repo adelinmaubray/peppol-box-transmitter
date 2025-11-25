@@ -56,6 +56,11 @@ class FileUtilsTest {
 	}
 	
 	@Test
+	fun `input directory is not a directory`() {
+		assertFailsWith<IllegalArgumentException> { getFilesInInputDirectory("src/test/resources/files/file1.xml") }
+	}
+	
+	@Test
 	fun `input direction does not exist`() {
 		assertFailsWith<IllegalArgumentException> { getFilesInInputDirectory("does/not/exist") }
 	}

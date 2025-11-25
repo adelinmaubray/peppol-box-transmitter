@@ -18,9 +18,10 @@ fun getPropertyFile(propertyFilePath: String): File {
 fun getFilesInInputDirectory(directoryPath: String): Set<File> {
 	
 	val inputDirectory = File(directoryPath)
+	if (!inputDirectory.isDirectory()) throw IllegalArgumentException("Input directory is not a directory: ${inputDirectory.absolutePath}")
 	if (!inputDirectory.exists()) throw IllegalArgumentException("Input directory does not exist: ${inputDirectory.absolutePath}")
 	
-	return inputDirectory.walk()
+	return inputDirectory.listFiles()!!
 		.filter { it.isFile }
 		.filter { it.extension == "xml" }
 		.sortedBy { it.name }
@@ -41,10 +42,10 @@ fun moveFileToAnotherFolder(fileToMove: File, newDirectory: String): File {
 	
 	try {
 		Files.move(fileToMove.toPath(), newFile.toPath())
-		printlnInRed("File ${fileToMove.name} moved to $newDirectory")
+		printInCyan("File ${fileToMove.name} moved to ${destinationDirectory.absolutePath}")
 		return newFile
 	} catch (e: Exception) {
-		printlnInRed("Error moving file ${fileToMove.name} to $newDirectory")
+		printlnInRed("Error moving file ${fileToMove.name} to ${destinationDirectory.absolutePath}")
 		throw e
 	}
 }
