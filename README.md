@@ -52,6 +52,17 @@ API_KEY=your-api-key
 API_SECRET=your-api-secret
 ```
 
+⚠️ For Windows, the `\` should be escaped
+```properties
+TEST_MODE=true
+INPUT_DIRECTORY=C:\\path\\to\\directory
+OUTPUT_DIRECTORY=C:\\path\\to\\directory\\sent
+BASE_URL=https://www.peppol-box.be/portal/
+TENANT_ID=your-tenant
+API_KEY=your-api-key
+API_SECRET=your-api-secret
+```
+
 ## Develop: build, test, run
 
 - Build (with tests):

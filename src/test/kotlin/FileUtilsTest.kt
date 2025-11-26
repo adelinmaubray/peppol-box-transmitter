@@ -73,7 +73,7 @@ class FileUtilsTest {
 		
 		val file = originalFile.copyTo(File(targetFolder, originalFile.name), overwrite = true)
 		val originalContent = file.readText()
-		val newFolder = "target/test/moved"
+		val newFolder = "target${File.separator}test${File.separator}moved"
 		
 		// act
 		val res = moveFileToAnotherFolder(file, newFolder)

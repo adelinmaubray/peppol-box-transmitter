@@ -36,6 +36,8 @@ object PropertyParser {
 			apiSecret = properties.getProperty(ApplicationProperty.API_SECRET)
 		)
 		
-		printInCyan("Properties successfully loaded! Test mode? ${AppConfig.config.testMode}")
+		printInCyan("Properties successfully loaded:")
+		println(AppConfig.config.toString())
+		println()
 	}
 }

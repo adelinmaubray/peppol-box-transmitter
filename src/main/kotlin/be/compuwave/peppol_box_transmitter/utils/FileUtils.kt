@@ -28,8 +28,12 @@ fun getFilesInInputDirectory(directoryPath: String): Set<File> {
 		.toSet()
 		.also { allFiles ->
 			printInCyan("Files found in $directoryPath:")
-			allFiles.forEach { printWithTab("${it.name}") }
-			println()
+			if (allFiles.isNotEmpty()) {
+				allFiles.forEach { printWithTab("${it.name}") }
+				println()
+			} else {
+				printlnInRed("\tNo files found in $directoryPath")
+			}
 		}
 }
 

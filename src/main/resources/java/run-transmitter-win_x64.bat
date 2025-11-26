@@ -14,12 +14,7 @@ set "PROPS=%~1"
 
 REM Find the platform-specific JRE directory (versioned folder matching *-win_x64)
 set "JRE_DIR="
-for /d %%D in ("%SCRIPT_DIR%*-win_x64") do (
-  if exist "%%~fD\bin\java.exe" (
-    set "JRE_DIR=%%~fD"
-    goto :foundJre
-  )
-)
+for /f "delims=" %%D in ('dir /b /ad "%SCRIPT_DIR%*-win_x64" 2^>nul') do if exist "%SCRIPT_DIR%%%~D\bin\java.exe" set "JRE_DIR=%SCRIPT_DIR%%%~D" & goto :foundJre
 :foundJre
 if "%JRE_DIR%"=="" (
   echo Bundled JRE for win_x64 not found next to this script. 1>&2
@@ -31,19 +26,22 @@ if not exist "%JAVA_BIN%" (
   exit /b 4
 )
 
+echo "%JRE_DIR%"
+
 REM Locate the fat JAR
+set "search_pattern=*-jar-with-dependencies.jar"
 set "JAR_FILE="
-for %%F in ("%SCRIPT_DIR%*-jar-with-dependencies.jar") do (
-  if exist "%%~fF" (
-    set "JAR_FILE=%%~fF"
-    goto :foundJar
-  )
+for /f "delims=" %%f in ('dir /b /s "%search_pattern%" 2^>nul') do (
+    set "JAR_FILE=%%f"
+    goto :found
 )
-:foundJar
+
 if "%JAR_FILE%"=="" (
-  echo Fat JAR (*-jar-with-dependencies.jar) not found next to this script. 1>&2
-  exit /b 5
+    echo Error: File matching pattern "%search_pattern%" not found.
+    exit /b 1
 )
+
+:found
 
 "%JAVA_BIN%" -jar "%JAR_FILE%" --properties="%PROPS%"
 exit /b %errorlevel%

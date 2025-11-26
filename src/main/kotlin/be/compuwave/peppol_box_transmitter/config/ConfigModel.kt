@@ -33,4 +33,13 @@ data class ConfigModel(val testMode: Boolean,
 			}
 		}
 	}
+	
+	override fun toString(): String =
+"""	testMode: $testMode
+	baseUrl: $baseUrl
+	inputDirectory: $inputDirectory
+	outputDirectory: $outputDirectory
+	tenantId: xxx-xxx-xx (not shown in logs)
+	apiKey: xxx-xxx-xxx (not shown in logs)
+	apiSecret: xxx-xxx-xxx (not shown in logs)"""
 }
