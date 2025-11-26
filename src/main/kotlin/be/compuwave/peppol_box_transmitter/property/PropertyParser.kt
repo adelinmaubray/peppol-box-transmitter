@@ -2,6 +2,7 @@ package be.compuwave.peppol_box_transmitter.property
 
 import be.compuwave.peppol_box_transmitter.config.AppConfig
 import be.compuwave.peppol_box_transmitter.config.ConfigModel
+import be.compuwave.peppol_box_transmitter.utils.printInCyan
 import java.io.File
 import java.io.FileInputStream
 import java.util.*
@@ -34,5 +35,7 @@ object PropertyParser {
 			apiKey = properties.getProperty(ApplicationProperty.API_KEY),
 			apiSecret = properties.getProperty(ApplicationProperty.API_SECRET)
 		)
+		
+		printInCyan("Properties successfully loaded! Test mode? ${AppConfig.config.testMode}")
 	}
 }
