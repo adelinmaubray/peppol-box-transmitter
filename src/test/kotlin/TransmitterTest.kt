@@ -1,5 +1,6 @@
 import be.compuwave.peppol_box_transmitter.config.AppConfig
 import be.compuwave.peppol_box_transmitter.transmitter.ApiProxy
+import be.compuwave.peppol_box_transmitter.transmitter.ResultHandler
 import be.compuwave.peppol_box_transmitter.transmitter.Transmitter
 import io.mockk.every
 import io.mockk.mockk
@@ -8,7 +9,7 @@ import io.mockk.unmockkAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.openapitools.client.apis.PeppolBoxByFlexinaAPIApi
-import org.openapitools.client.infrastructure.ClientException
+import org.openapitools.client.models.SendPeppolResult
 import utils.provideValidConfig
 import java.io.File
 import kotlin.test.Test
@@ -24,6 +25,9 @@ class TransmitterTest {
 		every { AppConfig.config } returns provideValidConfig()
 		
 		mockkObject(ApiProxy)
+		every { ApiProxy.client } returns mockk<PeppolBoxByFlexinaAPIApi>(relaxed = true)
+		
+		mockkObject(ResultHandler)
 	}
 	
 	@AfterEach
@@ -36,7 +40,7 @@ class TransmitterTest {
 		
 		// arrange
 		val file = File("src/test/resources/files/file1.xml")
-		every { ApiProxy.client } returns mockk<PeppolBoxByFlexinaAPIApi>(relaxed = true)
+		every { ResultHandler.handleResultData(any(), any()) } returns Result.success(SendPeppolResult())
 		
 		// act
 		val res = Transmitter.sendDocument(file)
@@ -50,7 +54,7 @@ class TransmitterTest {
 		
 		// arrange
 		val file = File("src/test/resources/files/file1.xml")
-		every { ApiProxy.client } throws ClientException("Something went wrong")
+		every { ResultHandler.handleResultData(any(), any()) } returns Result.failure(Exception())
 		
 		// act
 		val res = Transmitter.sendDocument(file)
@@ -86,7 +90,7 @@ class TransmitterTest {
 			File("src/test/resources/files/file2.xml"),
 			File("src/test/resources/files/file3.xml")
 		)
-		every { ApiProxy.client } throws ClientException("Something went wrong")
+		every { ResultHandler.handleResultData(any(), any()) } returns Result.failure(Exception())
 		
 		// act
 		val res = Transmitter.sendDocuments(files)

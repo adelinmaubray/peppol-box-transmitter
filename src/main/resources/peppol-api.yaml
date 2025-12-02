@@ -44,7 +44,7 @@ paths:
             default: false
       requestBody:
         content:
-          application/json:
+            text/plain: ### FIXME was application/json in previous version
             schema:
               type: "string"
               description: "UBL XML content (invoice or credit note)"

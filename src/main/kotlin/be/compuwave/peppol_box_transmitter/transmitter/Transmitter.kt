@@ -1,9 +1,6 @@
 package be.compuwave.peppol_box_transmitter.transmitter
 
 import be.compuwave.peppol_box_transmitter.config.AppConfig
-import be.compuwave.peppol_box_transmitter.utils.printlnInGreen
-import be.compuwave.peppol_box_transmitter.utils.printlnInRed
-import be.compuwave.peppol_box_transmitter.utils.printlnInYellow
 import org.openapitools.client.models.SendPeppolResult
 import java.io.File
 
@@ -35,30 +32,12 @@ object Transmitter {
 	 * or an exception on failure.
 	 */
 	fun sendDocument(xmlDocument: File): Result<SendPeppolResult> =
-		handleResultData(xmlDocument.name, ApiProxy.client.sendPeppolDocument(xmlDocument.readText(), AppConfig.config.testMode))
+		ResultHandler.handleResultData(
+			xmlDocument.name,
+			ApiProxy.client.sendPeppolDocument(
+				xmlDocument.readText(),
+				AppConfig.config.testMode
+			)
+		)
 	
-	private fun handleResultData(fileName: String, data: SendPeppolResult): Result<SendPeppolResult> {
-		
-		val errors = data.errors
-		if (errors?.isNotEmpty() == true) {
-			
-			val message = errors.joinToString(" - ")
-			
-			printlnInRed("Document $fileName has NOT been sent:")
-			printlnInYellow("\tError: $message")
-			
-			return Result.failure(RuntimeException(message))
-		}
-		
-		val warnings = data.warnings
-		val id = data.id
-		if (warnings?.isNotEmpty() == true) {
-			printlnInYellow("Document $fileName (id: $id) has been sent with warning]")
-			printlnInYellow("\t${warnings.joinToString(" - ")}")
-		} else {
-			printlnInGreen("Document $fileName has been successfully sent with id: $id")
-		}
-		
-		return Result.success(data)
-	}
 }

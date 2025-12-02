@@ -14,7 +14,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class Main {
+class MainTest {
 	
 	companion object {
 		val targetFolder = File("target/test")
