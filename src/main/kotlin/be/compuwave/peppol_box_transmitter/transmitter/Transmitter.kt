@@ -3,6 +3,7 @@ package be.compuwave.peppol_box_transmitter.transmitter
 import be.compuwave.peppol_box_transmitter.config.AppConfig
 import be.compuwave.peppol_box_transmitter.utils.printlnInGreen
 import be.compuwave.peppol_box_transmitter.utils.printlnInRed
+import be.compuwave.peppol_box_transmitter.utils.printlnInYellow
 import org.openapitools.client.models.SendPeppolResult
 import java.io.File
 
@@ -15,24 +16,12 @@ object Transmitter {
 	 * @param xmlDocuments A set of XML files to be sent.
 	 * @return A set of XML files that were successfully sent.
 	 */
-	fun sendDocuments(xmlDocuments: Set<File>): Set<File> {
-		
-		return xmlDocuments
-			.asSequence()
-			.map { it to sendDocument(it) }
-			.onEach { pair ->
-				val result = pair.second
-				result.onSuccess {
-					printlnInGreen("Document ${pair.first.name} has been successfully sent with id: ${it.id}")
-				}
-				result.onFailure {
-					printlnInRed("Document ${pair.first.name} has NOT been sent: ${it.message}")
-				}
-			}
-			.filter { it.second.isSuccess }
-			.map { it.first }
-			.toSet()
-	}
+	fun sendDocuments(xmlDocuments: Set<File>): Set<File> = xmlDocuments
+		.asSequence()
+		.map { it to sendDocument(it) }
+		.filter { it.second.isSuccess }
+		.map { it.first }
+		.toSet()
 	
 	/**
 	 * Sends a single XML document via the Peppol network using the client API.
@@ -45,9 +34,31 @@ object Transmitter {
 	 * @return A `Result` object containing a `SendPeppolResult` on successful execution
 	 * or an exception on failure.
 	 */
-	fun sendDocument(xmlDocument: File): Result<SendPeppolResult> {
-		return runCatching {
-			ApiProxy.client.sendPeppolDocument(xmlDocument.readText(), AppConfig.config.testMode)
+	fun sendDocument(xmlDocument: File): Result<SendPeppolResult> =
+		handleResultData(xmlDocument.name, ApiProxy.client.sendPeppolDocument(xmlDocument.readText(), AppConfig.config.testMode))
+	
+	private fun handleResultData(fileName: String, data: SendPeppolResult): Result<SendPeppolResult> {
+		
+		val errors = data.errors
+		if (errors?.isNotEmpty() == true) {
+			
+			val message = errors.joinToString(" - ")
+			
+			printlnInRed("Document $fileName has NOT been sent:")
+			printlnInYellow("\tError: $message")
+			
+			return Result.failure(RuntimeException(message))
 		}
+		
+		val warnings = data.warnings
+		val id = data.id
+		if (warnings?.isNotEmpty() == true) {
+			printlnInYellow("Document $fileName (id: $id) has been sent with warning]")
+			printlnInYellow("\t${warnings.joinToString(" - ")}")
+		} else {
+			printlnInGreen("Document $fileName has been successfully sent with id: $id")
+		}
+		
+		return Result.success(data)
 	}
 }
