@@ -34,7 +34,10 @@ Create a properties file and pass its path when running the app. Keys:
 
 - TEST_MODE=true|false — if true, uses the API in test mode
 - INPUT_DIRECTORY=... — path to the directory containing XML invoice files to send
-- OUTPUT_DIRECTORY=... — path to the directory where successfully sent files will be moved (created if missing)
+- OUTPUT_DIRECTORY=... — path to the directory where successfully sent files will be moved (created if missing) |
+  default: `${INPUT_DIRECTORY}/sent`
+- LOGGING_DIRECTORY=... — path to the directory where logging file will be saved (created if missing) | default:
+  `${current working dir}/logs`
 - BASE_URL=... — base URL of the Peppol Box API (e.g., https://www.peppol-box.be/portal/)
 - TENANT_ID=... — your tenant identifier
 - API_KEY=... — your API key
@@ -46,6 +49,7 @@ Example:
 TEST_MODE=true
 INPUT_DIRECTORY=src/main/resources/examples
 OUTPUT_DIRECTORY=src/main/resources/examples/sent
+LOGGING_DIRECTORY=src/main/resources/logs
 BASE_URL=https://www.peppol-box.be/portal/
 TENANT_ID=your-tenant
 API_KEY=your-api-key
@@ -57,6 +61,7 @@ API_SECRET=your-api-secret
 TEST_MODE=true
 INPUT_DIRECTORY=C:\\path\\to\\directory
 OUTPUT_DIRECTORY=C:\\path\\to\\directory\\sent
+LOGGING_DIRECTORY=C:\\path\\to\\log
 BASE_URL=https://www.peppol-box.be/portal/
 TENANT_ID=your-tenant
 API_KEY=your-api-key

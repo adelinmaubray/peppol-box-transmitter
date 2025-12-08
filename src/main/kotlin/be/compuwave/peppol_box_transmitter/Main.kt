@@ -4,12 +4,11 @@ import be.compuwave.peppol_box_transmitter.arguments.ProgramArguments
 import be.compuwave.peppol_box_transmitter.config.AppConfig
 import be.compuwave.peppol_box_transmitter.property.PropertyParser
 import be.compuwave.peppol_box_transmitter.transmitter.Transmitter
-import be.compuwave.peppol_box_transmitter.utils.getFilesInInputDirectory
-import be.compuwave.peppol_box_transmitter.utils.getPropertyFile
-import be.compuwave.peppol_box_transmitter.utils.moveFileToAnotherFolder
-import be.compuwave.peppol_box_transmitter.utils.printlnInRed
+import be.compuwave.peppol_box_transmitter.utils.*
 
 fun main(args: Array<String>) {
+	
+	val logger = Logger()
 	
 	try {
 		
@@ -26,8 +25,12 @@ fun main(args: Array<String>) {
 			.also { println() }
 			.forEach { moveFileToAnotherFolder(it, AppConfig.config.outputDirectory) }
 		
+		// Export logs to file
+		logger.writeLogsToFile(AppConfig.config.loggingDirectory)
+		
 	} catch (exception: Exception) {
-		printlnInRed(exception.message)
+		
+		exception.message?.let { printlnInRed(exception.message) }
 		println()
 		throw exception
 	}

@@ -4,6 +4,7 @@ import org.valiktor.ConstraintViolationException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 class ConfigModelTest {
 	
@@ -11,6 +12,7 @@ class ConfigModelTest {
 		private const val VALID_TEST_MODE = true
 		private const val VALID_INPUT_DIRECTORY = "src/main/resources/input"
 		private const val VALID_OUTPUT_DIRECTORY = "src/main/resources/output"
+		private const val VALID_LOGGING_DIRECTORY = "src/main/resources/logs"
 		private const val VALID_BASE_URL = "https://www.jetbrains.com"
 		private const val VALID_TENANT_ID = "tenant-id"
 		private const val VALID_API_KEY = "api-key"
@@ -29,6 +31,7 @@ class ConfigModelTest {
 				apiSecret = VALID_API_SECRET
 			).also {
 				assertEquals(it.outputDirectory, "${it.inputDirectory}/sent")
+				assertTrue(it.loggingDirectory.endsWith("/logs"))
 			}
 		}
 		
@@ -37,12 +40,14 @@ class ConfigModelTest {
 				testMode = VALID_TEST_MODE,
 				inputDirectory = VALID_INPUT_DIRECTORY,
 				outputDirectory = VALID_OUTPUT_DIRECTORY,
+				loggingDirectory = VALID_LOGGING_DIRECTORY,
 				baseUrl = VALID_BASE_URL,
 				tenantId = VALID_TENANT_ID,
 				apiKey = VALID_API_KEY,
 				apiSecret = VALID_API_SECRET
 			).also {
 				assertEquals(it.outputDirectory, VALID_OUTPUT_DIRECTORY)
+				assertEquals(it.loggingDirectory, VALID_LOGGING_DIRECTORY)
 			}
 		}
 	}
@@ -79,6 +84,25 @@ class ConfigModelTest {
 		}
 		
 		assertEquals(ConfigModel::outputDirectory.name, exception.constraintViolations.first().property)
+		assertEquals("NotBlank", exception.constraintViolations.first().constraint.name)
+	}
+	
+	@Test
+	fun `logging directory is blank`() {
+		val exception = assertFailsWith<ConstraintViolationException> {
+			ConfigModel(
+				testMode = VALID_TEST_MODE,
+				baseUrl = VALID_BASE_URL,
+				inputDirectory = VALID_INPUT_DIRECTORY,
+				outputDirectory = VALID_OUTPUT_DIRECTORY,
+				loggingDirectory = "",
+				tenantId = VALID_TENANT_ID,
+				apiKey = VALID_API_KEY,
+				apiSecret = VALID_API_SECRET
+			)
+		}
+		
+		assertEquals(ConfigModel::loggingDirectory.name, exception.constraintViolations.first().property)
 		assertEquals("NotBlank", exception.constraintViolations.first().constraint.name)
 	}
 	

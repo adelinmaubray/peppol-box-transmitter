@@ -20,6 +20,7 @@ import java.util.*
 object PropertyParser {
 	
 	private fun Properties.getProperty(propertyName: ApplicationProperty): String = this.getProperty(propertyName.name, "")
+	private fun Properties.getPropertyOrNull(propertyName: ApplicationProperty): String? = this.getProperty(propertyName.name, null)
 	
 	fun loadProperties(propertiesFile: File) {
 		
@@ -29,7 +30,8 @@ object PropertyParser {
 		AppConfig.config = ConfigModel(
 			testMode = properties.getProperty(ApplicationProperty.TEST_MODE).toBoolean(),
 			inputDirectory = properties.getProperty(ApplicationProperty.INPUT_DIRECTORY),
-			outputDirectory = properties.getProperty(ApplicationProperty.OUTPUT_DIRECTORY),
+			outputDirectory = properties.getPropertyOrNull(ApplicationProperty.OUTPUT_DIRECTORY),
+			loggingDirectory = properties.getPropertyOrNull(ApplicationProperty.LOGGING_DIRECTORY),
 			baseUrl = properties.getProperty(ApplicationProperty.BASE_URL),
 			tenantId = properties.getProperty(ApplicationProperty.TENANT_ID),
 			apiKey = properties.getProperty(ApplicationProperty.API_KEY),

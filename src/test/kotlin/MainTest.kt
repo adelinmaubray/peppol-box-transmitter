@@ -20,6 +20,7 @@ class MainTest {
 		val targetFolder = File("target/test")
 		val filesFolder = File(targetFolder, "files")
 		val sentFolder = File(filesFolder, "sent")
+		val loggingFolder = File(filesFolder, "logs")
 		val propertyFile = File(targetFolder, "valid.properties")
 	}
 	
@@ -43,6 +44,9 @@ class MainTest {
 		// copy property file
 		val originalPropertyFile = File("src/test/resources/properties/valid.properties")
 		originalPropertyFile.copyTo(propertyFile, overwrite = true)
+		
+		// create log folder
+		loggingFolder.mkdirs()
 	}
 	
 	@AfterEach
@@ -62,6 +66,7 @@ class MainTest {
 		main(arguments)
 		
 		assertTrue(propertyFile.exists())
+		assertEquals(1, loggingFolder.listFiles()?.size)
 		assertEquals(1, filesFolder.listFiles()?.filter { it.isFile }?.size)
 		assertEquals(3, sentFolder.listFiles()?.size)
 	}
