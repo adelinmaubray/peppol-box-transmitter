@@ -6,6 +6,7 @@ import org.valiktor.ConstraintViolationException
 import org.valiktor.functions.isNotBlank
 import org.valiktor.functions.isWebsite
 import org.valiktor.validate
+import java.io.File
 import java.nio.file.Paths
 
 data class ConfigModel(val testMode: Boolean,
@@ -27,14 +28,14 @@ data class ConfigModel(val testMode: Boolean,
 		apiSecret: String,
 		testMode: Boolean,
 	) : this(
-		testMode,
-		baseUrl,
-		loggingDirectory ?: "${Paths.get("").toAbsolutePath()}/logs",
-		inputDirectory,
-		outputDirectory ?: "$inputDirectory/sent",
-		tenantId,
-		apiKey,
-		apiSecret
+		testMode = testMode,
+		baseUrl = baseUrl,
+		loggingDirectory = loggingDirectory ?: "${Paths.get("").toAbsolutePath()}${File.separator}logs",
+		inputDirectory = inputDirectory,
+		outputDirectory = outputDirectory ?: "$inputDirectory${File.separator}sent",
+		tenantId = tenantId,
+		apiKey = apiKey,
+		apiSecret = apiSecret
 	)
 	
 	
