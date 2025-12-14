@@ -13,7 +13,7 @@
             <directory>${project.basedir}/src/main/resources/java</directory>
             <outputDirectory>/</outputDirectory>
             <includes>
-                <!-- Windows launcher (if present) -->
+                <!-- Windows launcher -->
                 <include>run-transmitter-win_x64.bat</include>
                 <!-- Windows x64 runtime -->
                 <include>**/*-win_x64/**/*</include>

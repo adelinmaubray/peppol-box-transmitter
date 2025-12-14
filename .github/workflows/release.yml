@@ -25,15 +25,9 @@ jobs:
             -   name: Set up JDK 25
                 uses: actions/setup-java@v4
                 with:
-                    distribution: temurin
-                    java-version: '25'
+                    distribution: zulu
+                    java-version: 25
                     cache: maven
-            
-            -   name: Get project version
-                uses: PERES-Richard/maven-get-version-action@v3.0.0
-                id: project-version
-                with:
-                    args: "" # default value is set to '.' which lead to wrong command
             
             -   name: Build package
                 run: mvn -B -ntp package
@@ -41,7 +35,28 @@ jobs:
             -   name: Upload ZIP artifact
                 uses: actions/upload-artifact@v6
                 with:
-                    name: peppol-box-transmitter-${{ steps.project-version.outputs.version }}-zip
+                    name: peppol-box-transmitter
                     path: target/*.zip
                     if-no-files-found: error
                     compression-level: 0
+                    
+            -   name: Get project version
+                id: version
+                run: |
+                    VERSION=$(mvn -q -DforceStdout -Dexpression=project.version help:evaluate)
+                    echo "version=$VERSION" >> $GITHUB_OUTPUT
+            
+            -   name: Create Git tag
+                run: |
+                    git tag "v${{ steps.version.outputs.version }}"
+                    git push origin "v${{ steps.version.outputs.version }}"
+            
+            -   name: Create GitHub Release
+                uses: softprops/action-gh-release@v2
+                with:
+                    tag_name: "v${{ steps.version.outputs.version }}"
+                    name: "peppol-box-transmitter-${{ steps.version.outputs.version }}"
+                    files: |
+                        target/*.zip
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
