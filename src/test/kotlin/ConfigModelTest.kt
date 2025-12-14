@@ -1,6 +1,7 @@
 import be.compuwave.peppol_box_transmitter.config.ConfigModel
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.valiktor.ConstraintViolationException
+import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -30,8 +31,8 @@ class ConfigModelTest {
 				apiKey = VALID_API_KEY,
 				apiSecret = VALID_API_SECRET
 			).also {
-				assertEquals(it.outputDirectory, "${it.inputDirectory}/sent")
-				assertTrue(it.loggingDirectory.endsWith("/logs"))
+				assertEquals("${it.inputDirectory}${File.separator}sent", it.outputDirectory)
+				assertTrue(it.loggingDirectory.endsWith("${File.separator}logs"))
 			}
 		}
 		

@@ -33,7 +33,7 @@ class Logger {
 			logDirectory.mkdirs()
 			
 			// create log file
-			val format = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss")
+			val format = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss")
 			val logFile = File(directoryPath, "${format.format(LocalDateTime.now())}.log")
 			logFile.createNewFile()
 			
