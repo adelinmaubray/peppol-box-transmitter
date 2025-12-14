@@ -198,19 +198,13 @@
 						</goals>
 						<configuration>
 							<descriptors>
-								<descriptor>${project.basedir}/src/main/resources/zip.xml</descriptor>
+								<descriptor>${project.basedir}/src/main/resources/zip/zip-linux_x64.xml</descriptor>
+								<descriptor>${project.basedir}/src/main/resources/zip/zip-macosx_aarch64.xml</descriptor>
+								<descriptor>${project.basedir}/src/main/resources/zip/zip-win_x64.xml</descriptor>
 							</descriptors>
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>10</source>
-					<target>10</target>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
