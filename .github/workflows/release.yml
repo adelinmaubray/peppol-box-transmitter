@@ -4,7 +4,6 @@ on:
     push:
         branches:
             - main
-            - release
 
 concurrency:
     group: ${{ github.ref_name }}
@@ -32,14 +31,6 @@ jobs:
             
             -   name: Build package
                 run: mvn -B -ntp package
-                
-            -   name: Upload ZIP artifact
-                uses: actions/upload-artifact@v6
-                with:
-                    name: peppol-box-transmitter
-                    path: target/*.zip
-                    if-no-files-found: error
-                    compression-level: 0
                     
             -   name: Get project version
                 id: version
