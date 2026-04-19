@@ -6,8 +6,7 @@ import java.nio.file.Files
 fun getPropertyFile(propertyFilePath: String): File {
 	val propertyFile = File(propertyFilePath)
 	
-	if (propertyFile.extension != "properties")
-		throw IllegalArgumentException("The provided property file does not have the '.properties' extension: ${propertyFile.name}'")
+	require(propertyFile.extension == "properties") { "The provided property file does not have the '.properties' extension: ${propertyFile.name}'" }
 	
 	return if (propertyFile.exists()) propertyFile else throw NoSuchFileException(
 		file = propertyFile,
@@ -18,8 +17,8 @@ fun getPropertyFile(propertyFilePath: String): File {
 fun getFilesInInputDirectory(directoryPath: String): Set<File> {
 	
 	val inputDirectory = File(directoryPath)
-	if (!inputDirectory.isDirectory()) throw IllegalArgumentException("Input directory is not a directory: ${inputDirectory.absolutePath}")
-	if (!inputDirectory.exists()) throw IllegalArgumentException("Input directory does not exist: ${inputDirectory.absolutePath}")
+	require(inputDirectory.isDirectory()) { "The provided path is not a directory: $directoryPath" }
+	require(inputDirectory.exists()) { "Input directory does not exist: ${inputDirectory.absolutePath}" }
 	
 	return inputDirectory.listFiles()!!
 		.filter { it.isFile }

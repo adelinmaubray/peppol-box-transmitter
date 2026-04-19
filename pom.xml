@@ -160,7 +160,6 @@
 							<generateModelTests>false</generateModelTests>
 							<generateApiTests>false</generateApiTests>
 							<configOptions>
-								<!--								<sourceFolder>${project.build.outputDirectory}/generate-resources/main/src</sourceFolder>-->
 								<generateModelTests>false</generateModelTests>
 								<generateApiTests>false</generateApiTests>
 							</configOptions>
