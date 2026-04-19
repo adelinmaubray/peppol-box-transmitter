@@ -32,16 +32,16 @@ Peppol Box API, then moves successfully transmitted files to an output folder.
 
 Create a properties file and pass its path when running the app. Keys:
 
-- TEST_MODE=true|false — if true, uses the API in test mode
-- INPUT_DIRECTORY=... — path to the directory containing XML invoice files to send
-- OUTPUT_DIRECTORY=... — path to the directory where successfully sent files will be moved (created if missing) |
-  default: `${INPUT_DIRECTORY}/sent`
-- LOGGING_DIRECTORY=... — path to the directory where logging file will be saved (created if missing) | default:
-  `${current working dir}/logs`
-- BASE_URL=... — base URL of the Peppol Box API (e.g., https://www.peppol-box.be/portal/)
-- TENANT_ID=... — your tenant identifier
-- API_KEY=... — your API key
-- API_SECRET=... — your API secret
+| Property            | Description                                                                            | Default                       |
+|:--------------------|:---------------------------------------------------------------------------------------|:------------------------------|
+| `TEST_MODE`         | If `true`, uses the API in test mode                                                   |                               |
+| `INPUT_DIRECTORY`   | Path to the directory containing XML invoice files to send                             |                               |
+| `OUTPUT_DIRECTORY`  | Path to the directory where successfully sent files will be moved (created if missing) | `${INPUT_DIRECTORY}/sent`     |
+| `LOGGING_DIRECTORY` | Path to the directory where logging file will be saved (created if missing)            | `${current working dir}/logs` |
+| `BASE_URL`          | Base URL of the Peppol Box API (e.g., `https://www.peppol-box.be/portal/`)             |                               |
+| `TENANT_ID`         | Your tenant identifier                                                                 |                               |
+| `API_KEY`           | Your API key                                                                           |                               |
+| `API_SECRET`        | Your API secret                                                                        |                               |
 
 Example:
 
@@ -57,6 +57,7 @@ API_SECRET=your-api-secret
 ```
 
 ⚠️ For Windows, the `\` should be escaped
+
 ```properties
 TEST_MODE=true
 INPUT_DIRECTORY=C:\\path\\to\\directory
