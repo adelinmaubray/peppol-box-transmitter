@@ -4,7 +4,7 @@ import be.compuwave.peppol_box_transmitter.config.AppConfig
 import org.openapitools.client.models.SendPeppolResult
 import java.io.File
 
-object Transmitter {
+object Sender {
 	
 	/**
 	 * Sends a set of XML documents to a given endpoint and logs the result of the operation.

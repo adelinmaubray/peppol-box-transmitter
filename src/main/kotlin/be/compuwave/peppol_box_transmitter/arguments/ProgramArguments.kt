@@ -20,7 +20,13 @@ import be.compuwave.peppol_box_transmitter.utils.printWithTab
 object ProgramArguments {
 	
 	enum class ProgramArgument {
-		PROPERTIES
+		PROPERTIES,
+		ACTION
+	}
+	
+	enum class ProgramAction {
+		SEND,
+		DOWNLOAD
 	}
 	
 	private lateinit var parsedArguments: Map<ProgramArgument, String>
@@ -53,4 +59,5 @@ object ProgramArguments {
 	}
 	
 	fun getPropertyFilePath() = getArgument(ProgramArgument.PROPERTIES)
+	fun getAction() = ProgramAction.valueOf(getArgument(ProgramArgument.ACTION).uppercase())
 }

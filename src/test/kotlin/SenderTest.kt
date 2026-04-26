@@ -1,7 +1,7 @@
 import be.compuwave.peppol_box_transmitter.config.AppConfig
 import be.compuwave.peppol_box_transmitter.transmitter.ApiProxy
 import be.compuwave.peppol_box_transmitter.transmitter.ResultHandler
-import be.compuwave.peppol_box_transmitter.transmitter.Transmitter
+import be.compuwave.peppol_box_transmitter.transmitter.Sender
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -16,7 +16,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class TransmitterTest {
+class SenderTest {
 	
 	@BeforeEach
 	fun setUp() {
@@ -43,7 +43,7 @@ class TransmitterTest {
 		every { ResultHandler.handleResultData(any(), any()) } returns Result.success(SendPeppolResult())
 		
 		// act
-		val res = Transmitter.sendDocument(file)
+		val res = Sender.sendDocument(file)
 		
 		// assert
 		assertTrue(res.isSuccess)
@@ -57,7 +57,7 @@ class TransmitterTest {
 		every { ResultHandler.handleResultData(any(), any()) } returns Result.failure(Exception())
 		
 		// act
-		val res = Transmitter.sendDocument(file)
+		val res = Sender.sendDocument(file)
 		
 		// assert
 		assertTrue(res.isFailure)
@@ -75,7 +75,7 @@ class TransmitterTest {
 		every { ApiProxy.client } returns mockk<PeppolBoxByFlexinaAPIApi>(relaxed = true)
 		
 		// act
-		val res = Transmitter.sendDocuments(files)
+		val res = Sender.sendDocuments(files)
 		
 		// assert
 		assertEquals(files.size, res.size)
@@ -93,7 +93,7 @@ class TransmitterTest {
 		every { ResultHandler.handleResultData(any(), any()) } returns Result.failure(Exception())
 		
 		// act
-		val res = Transmitter.sendDocuments(files)
+		val res = Sender.sendDocuments(files)
 		
 		// assert
 		assertEquals(0, res.size)
