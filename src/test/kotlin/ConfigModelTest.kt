@@ -1,4 +1,5 @@
 import be.compuwave.peppol_box_transmitter.config.ConfigModel
+import kotlinx.datetime.LocalDateTime
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.valiktor.ConstraintViolationException
 import java.io.File
@@ -14,6 +15,8 @@ class ConfigModelTest {
 		private const val VALID_INPUT_DIRECTORY = "src/main/resources/input"
 		private const val VALID_OUTPUT_DIRECTORY = "src/main/resources/output"
 		private const val VALID_LOGGING_DIRECTORY = "src/main/resources/logs"
+		private const val VALID_DOWNLOAD_DIRECTORY = "src/main/resources/download"
+		private const val VALID_DOWNLOAD_FROM = "2026-01-01 00:00:00"
 		private const val VALID_BASE_URL = "https://www.jetbrains.com"
 		private const val VALID_TENANT_ID = "tenant-id"
 		private const val VALID_API_KEY = "api-key"
@@ -27,6 +30,8 @@ class ConfigModelTest {
 				testMode = VALID_TEST_MODE,
 				inputDirectory = VALID_INPUT_DIRECTORY,
 				baseUrl = VALID_BASE_URL,
+				downloadFrom = VALID_DOWNLOAD_FROM,
+				downloadDirectory = VALID_DOWNLOAD_DIRECTORY,
 				tenantId = VALID_TENANT_ID,
 				apiKey = VALID_API_KEY,
 				apiSecret = VALID_API_SECRET
@@ -42,6 +47,8 @@ class ConfigModelTest {
 				inputDirectory = VALID_INPUT_DIRECTORY,
 				outputDirectory = VALID_OUTPUT_DIRECTORY,
 				loggingDirectory = VALID_LOGGING_DIRECTORY,
+				downloadFrom = VALID_DOWNLOAD_FROM,
+				downloadDirectory = VALID_DOWNLOAD_DIRECTORY,
 				baseUrl = VALID_BASE_URL,
 				tenantId = VALID_TENANT_ID,
 				apiKey = VALID_API_KEY,
@@ -60,6 +67,8 @@ class ConfigModelTest {
 				testMode = VALID_TEST_MODE,
 				baseUrl = VALID_BASE_URL,
 				inputDirectory = "",
+				downloadFrom = VALID_DOWNLOAD_FROM,
+				downloadDirectory = VALID_DOWNLOAD_DIRECTORY,
 				tenantId = VALID_TENANT_ID,
 				apiKey = VALID_API_KEY,
 				apiSecret = VALID_API_SECRET
@@ -78,6 +87,8 @@ class ConfigModelTest {
 				baseUrl = VALID_BASE_URL,
 				inputDirectory = VALID_INPUT_DIRECTORY,
 				outputDirectory = "",
+				downloadFrom = VALID_DOWNLOAD_FROM,
+				downloadDirectory = VALID_DOWNLOAD_DIRECTORY,
 				tenantId = VALID_TENANT_ID,
 				apiKey = VALID_API_KEY,
 				apiSecret = VALID_API_SECRET
@@ -97,6 +108,8 @@ class ConfigModelTest {
 				inputDirectory = VALID_INPUT_DIRECTORY,
 				outputDirectory = VALID_OUTPUT_DIRECTORY,
 				loggingDirectory = "",
+				downloadFrom = VALID_DOWNLOAD_FROM,
+				downloadDirectory = VALID_DOWNLOAD_DIRECTORY,
 				tenantId = VALID_TENANT_ID,
 				apiKey = VALID_API_KEY,
 				apiSecret = VALID_API_SECRET
@@ -114,6 +127,8 @@ class ConfigModelTest {
 				testMode = VALID_TEST_MODE,
 				inputDirectory = VALID_INPUT_DIRECTORY,
 				baseUrl = "",
+				downloadFrom = VALID_DOWNLOAD_FROM,
+				downloadDirectory = VALID_DOWNLOAD_DIRECTORY,
 				tenantId = VALID_TENANT_ID,
 				apiKey = VALID_API_KEY,
 				apiSecret = VALID_API_SECRET
@@ -131,6 +146,8 @@ class ConfigModelTest {
 				testMode = VALID_TEST_MODE,
 				inputDirectory = VALID_INPUT_DIRECTORY,
 				baseUrl = "dummy",
+				downloadFrom = VALID_DOWNLOAD_FROM,
+				downloadDirectory = VALID_DOWNLOAD_DIRECTORY,
 				tenantId = VALID_TENANT_ID,
 				apiKey = VALID_API_KEY,
 				apiSecret = VALID_API_SECRET
@@ -148,6 +165,8 @@ class ConfigModelTest {
 				testMode = VALID_TEST_MODE,
 				inputDirectory = VALID_INPUT_DIRECTORY,
 				baseUrl = VALID_BASE_URL,
+				downloadFrom = VALID_DOWNLOAD_FROM,
+				downloadDirectory = VALID_DOWNLOAD_DIRECTORY,
 				tenantId = "",
 				apiKey = VALID_API_KEY,
 				apiSecret = VALID_API_SECRET
@@ -165,6 +184,8 @@ class ConfigModelTest {
 				testMode = VALID_TEST_MODE,
 				inputDirectory = VALID_INPUT_DIRECTORY,
 				baseUrl = VALID_BASE_URL,
+				downloadFrom = VALID_DOWNLOAD_FROM,
+				downloadDirectory = VALID_DOWNLOAD_DIRECTORY,
 				tenantId = VALID_TENANT_ID,
 				apiKey = "",
 				apiSecret = VALID_API_SECRET
@@ -182,6 +203,8 @@ class ConfigModelTest {
 				testMode = VALID_TEST_MODE,
 				inputDirectory = VALID_INPUT_DIRECTORY,
 				baseUrl = VALID_BASE_URL,
+				downloadFrom = VALID_DOWNLOAD_FROM,
+				downloadDirectory = VALID_DOWNLOAD_DIRECTORY,
 				tenantId = VALID_TENANT_ID,
 				apiKey = VALID_API_KEY,
 				apiSecret = ""
@@ -189,6 +212,43 @@ class ConfigModelTest {
 		}
 		
 		assertEquals(ConfigModel::apiSecret.name, exception.constraintViolations.first().property)
+		assertEquals("NotBlank", exception.constraintViolations.first().constraint.name)
+	}
+
+	@Test
+	fun `download from is in the future`() {
+		val exception = assertFailsWith<ConstraintViolationException> {
+			ConfigModel(
+				testMode = VALID_TEST_MODE,
+				inputDirectory = VALID_INPUT_DIRECTORY,
+				baseUrl = VALID_BASE_URL,
+				downloadFrom = "2999-01-01 00:00:00",
+				downloadDirectory = VALID_DOWNLOAD_DIRECTORY,
+				tenantId = VALID_TENANT_ID,
+				apiKey = VALID_API_KEY,
+				apiSecret = VALID_API_SECRET
+			)
+		}
+		
+		assertTrue(exception.constraintViolations.any { it.property == ConfigModel::downloadFrom.name })
+	}
+
+	@Test
+	fun `download directory is blank`() {
+		val exception = assertFailsWith<ConstraintViolationException> {
+			ConfigModel(
+				testMode = VALID_TEST_MODE,
+				inputDirectory = VALID_INPUT_DIRECTORY,
+				baseUrl = VALID_BASE_URL,
+				downloadFrom = VALID_DOWNLOAD_FROM,
+				downloadDirectory = "",
+				tenantId = VALID_TENANT_ID,
+				apiKey = VALID_API_KEY,
+				apiSecret = VALID_API_SECRET
+			)
+		}
+
+		assertEquals(ConfigModel::downloadDirectory.name, exception.constraintViolations.first().property)
 		assertEquals("NotBlank", exception.constraintViolations.first().constraint.name)
 	}
 }

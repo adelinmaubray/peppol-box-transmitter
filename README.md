@@ -7,7 +7,7 @@ Peppol Box API, then moves successfully transmitted files to an output folder.
 
 ## Technologies
 
-- Kotlin 2.2.20 (JVM target 21)
+- Kotlin 2.3.20 (JVM target 24)
 - Maven (build, test, packaging)
 - OpenAPI Generator 7.17.0 (API client code)
 	- OkHttp 5.3.1 (HTTP client)
@@ -17,7 +17,7 @@ Peppol Box API, then moves successfully transmitted files to an output folder.
 
 ## Prerequisites (for development)
 
-- Java 21 JDK (if you run from source; the packaged ZIP ships its own JRE)
+- Java 24 JDK (if you run from source; the packaged ZIP ships its own JRE)
 - Maven 3.8+
 
 ## Project layout (high level)
@@ -32,16 +32,21 @@ Peppol Box API, then moves successfully transmitted files to an output folder.
 
 Create a properties file and pass its path when running the app. Keys:
 
-| Property            | Description                                                                            | Default                       |
-|:--------------------|:---------------------------------------------------------------------------------------|:------------------------------|
-| `TEST_MODE`         | If `true`, uses the API in test mode                                                   |                               |
-| `INPUT_DIRECTORY`   | Path to the directory containing XML invoice files to send                             |                               |
-| `OUTPUT_DIRECTORY`  | Path to the directory where successfully sent files will be moved (created if missing) | `${INPUT_DIRECTORY}/sent`     |
-| `LOGGING_DIRECTORY` | Path to the directory where logging file will be saved (created if missing)            | `${current working dir}/logs` |
-| `BASE_URL`          | Base URL of the Peppol Box API (e.g., `https://www.peppol-box.be/portal/`)             |                               |
-| `TENANT_ID`         | Your tenant identifier                                                                 |                               |
-| `API_KEY`           | Your API key                                                                           |                               |
-| `API_SECRET`        | Your API secret                                                                        |                               |
+| Property             | Description                                                                            | Default                       | Used during  |
+|:---------------------|:---------------------------------------------------------------------------------------|:------------------------------|:------------:|
+| `TEST_MODE`          | If `true`, uses the API in test mode                                                   |                               |   ⬇️   ⬆️    |
+| `INPUT_DIRECTORY`    | Path to the directory containing XML invoice files to send                             |                               |      ⬆️      |
+| `OUTPUT_DIRECTORY`   | Path to the directory where successfully sent files will be moved (created if missing) | `${INPUT_DIRECTORY}/sent`     |      ⬆️      |
+| `LOGGING_DIRECTORY`  | Path to the directory where logging file will be saved (created if missing)            | `${current working dir}/logs` |  ⬇️     ⬆️   |
+| `DOWNLOAD_FROM`      | The date from which to download documents (format: `yyyy-MM-dd HH:mm:ss`)              | `2026-01-01 00:00:00`         |      ⬇️      |
+| `DOWNLOAD_DIRECTORY` | Path to the directory where downloaded files will be saved (created if missing)        |                               |      ⬇️      |
+| `BASE_URL`           | Base URL of the Peppol Box API (e.g., `https://www.peppol-box.be/portal/`)             |                               |   ⬇️   ⬆️    |
+| `TENANT_ID`          | Your tenant identifier                                                                 |                               |   ⬇️   ⬆️    |
+| `API_KEY`            | Your API key                                                                           |                               |   ⬇️   ⬆️    |
+| `API_SECRET`         | Your API secret                                                                        |                               |   ⬇️   ⬆️    |
+
+- ⬇️ downloading invoice
+- ⬆️ sending invoice
 
 Example:
 
@@ -50,6 +55,8 @@ TEST_MODE=true
 INPUT_DIRECTORY=src/main/resources/examples
 OUTPUT_DIRECTORY=src/main/resources/examples/sent
 LOGGING_DIRECTORY=src/main/resources/logs
+DOWNLOAD_FROM=2026-01-01 00:00:00
+DOWNLOAD_DIRECTORY=src/main/resources/downloads
 BASE_URL=https://www.peppol-box.be/portal/
 TENANT_ID=your-tenant
 API_KEY=your-api-key
@@ -63,6 +70,8 @@ TEST_MODE=true
 INPUT_DIRECTORY=C:\\path\\to\\directory
 OUTPUT_DIRECTORY=C:\\path\\to\\directory\\sent
 LOGGING_DIRECTORY=C:\\path\\to\\log
+DOWNLOAD_FROM=2026-01-01 00:00:00
+DOWNLOAD_DIRECTORY=C:\\path\\to\\downloads
 BASE_URL=https://www.peppol-box.be/portal/
 TENANT_ID=your-tenant
 API_KEY=your-api-key

@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="downloader" type="JetRunConfigurationType">
+    <option name="MAIN_CLASS_NAME" value="be.compuwave.peppol_box_transmitter.MainKt" />
+    <module name="peppol-box-transmitter" />
+    <option name="PROGRAM_PARAMETERS" value="--properties=src/main/resources/compuwave.properties --action=download" />
+    <shortenClasspath name="NONE" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

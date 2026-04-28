@@ -1,16 +1,15 @@
 package be.compuwave.peppol_box_transmitter.transmitter
 
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.toJavaLocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.toJavaLocalDateTime
 import java.time.ZoneId
 
 object Downloader {
 	
-	fun downloadDocuments(fromDate: LocalDate) {
-		val zoneId = ZoneId.systemDefault()
+	fun downloadDocuments(fromDate: LocalDateTime) {
 		val fromDateTime = fromDate
-			.toJavaLocalDate()
-			.atStartOfDay(zoneId)
+			.toJavaLocalDateTime()
+			.atZone(ZoneId.systemDefault())
 			.toOffsetDateTime()
 		
 		val invoices = ApiProxy.client.listInboundDocuments(fromDateTime)

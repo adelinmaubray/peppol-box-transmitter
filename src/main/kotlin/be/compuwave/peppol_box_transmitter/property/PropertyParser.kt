@@ -3,6 +3,8 @@ package be.compuwave.peppol_box_transmitter.property
 import be.compuwave.peppol_box_transmitter.config.AppConfig
 import be.compuwave.peppol_box_transmitter.config.ConfigModel
 import be.compuwave.peppol_box_transmitter.utils.printInCyan
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.toLocalDateTime
 import java.io.File
 import java.io.FileInputStream
 import java.util.*
@@ -32,6 +34,8 @@ object PropertyParser {
 			inputDirectory = properties.getProperty(ApplicationProperty.INPUT_DIRECTORY),
 			outputDirectory = properties.getPropertyOrNull(ApplicationProperty.OUTPUT_DIRECTORY),
 			loggingDirectory = properties.getPropertyOrNull(ApplicationProperty.LOGGING_DIRECTORY),
+			downloadFrom = properties.getProperty(ApplicationProperty.DOWNLOAD_FROM),
+			downloadDirectory = properties.getProperty(ApplicationProperty.DOWNLOAD_DIRECTORY),
 			baseUrl = properties.getProperty(ApplicationProperty.BASE_URL),
 			tenantId = properties.getProperty(ApplicationProperty.TENANT_ID),
 			apiKey = properties.getProperty(ApplicationProperty.API_KEY),

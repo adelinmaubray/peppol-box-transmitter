@@ -9,14 +9,42 @@ class ProgramArgumentsTest {
 	fun `all program arguments are valid`() {
 		
 		val prop = "dummy/path"
+		val action = "dummy"
 		
 		val input = listOf(
 			"--properties=$prop",
+			"--action=$action"
 		)
 		
 		ProgramArguments.parseProgramArguments(input.toTypedArray())
 		
 		assertEquals(prop, ProgramArguments.getPropertyFilePath())
+	}
+	
+	@Test
+	fun `properties argument is missing`() {
+		val input = listOf(
+			"--action=send"
+		)
+		
+		val exception = assertFailsWith<IllegalArgumentException> {
+			ProgramArguments.parseProgramArguments(input.toTypedArray())
+		}
+		
+		assertEquals("Missing argument: --properties", exception.message)
+	}
+	
+	@Test
+	fun `action argument is missing`() {
+		val input = listOf(
+			"--properties=dummy/path"
+		)
+		
+		val exception = assertFailsWith<IllegalArgumentException> {
+			ProgramArguments.parseProgramArguments(input.toTypedArray())
+		}
+		
+		assertEquals("Missing argument: --action", exception.message)
 	}
 	
 	@Test

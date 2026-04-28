@@ -60,9 +60,9 @@ class MainTest {
 	}
 	
 	@Test
-	fun `all process`() {
+	fun `all sent process`() {
 		
-		val arguments = arrayOf("--properties=target/test/valid.properties")
+		val arguments = arrayOf("--properties=target/test/valid.properties", "--action=send")
 		main(arguments)
 		
 		assertTrue(propertyFile.exists())

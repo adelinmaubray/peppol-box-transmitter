@@ -21,12 +21,12 @@ class PropertyParserTest {
 			PropertyParser.loadProperties(File("src/test/resources/properties/invalid.properties"))
 		}
 		
-		assertEquals(5, exception.constraintViolations.size)
+		assertEquals(6, exception.constraintViolations.size)
 		assertEquals(
-			listOf("NotBlank", "Website", "NotBlank", "NotBlank", "NotBlank"),
+			listOf("NotBlank", "NotBlank", "Website", "NotBlank", "NotBlank", "NotBlank"),
 			exception.constraintViolations.map { it.constraint.name })
 		assertEquals(
-			listOf("inputDirectory", "baseUrl", "tenantId", "apiKey", "apiSecret"),
+			listOf("inputDirectory", "downloadDirectory",  "baseUrl", "tenantId", "apiKey", "apiSecret"),
 			exception.constraintViolations.map { it.property })
 	}
 }

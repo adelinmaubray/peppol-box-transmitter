@@ -11,9 +11,6 @@ import kotlinx.datetime.Month
 
 fun main(args: Array<String>) {
 	
-	// TODO retrieve the date from .properties file or program args
-	val date = LocalDate(2026, Month.MARCH, 1)
-	
 	val logger = Logger()
 	
 	try {
@@ -34,7 +31,7 @@ fun main(args: Array<String>) {
 					.also { println() }
 					.forEach { moveFileToAnotherFolder(it, AppConfig.config.outputDirectory) }
 			
-			ProgramArguments.ProgramAction.DOWNLOAD -> Downloader.downloadDocuments(date)
+			ProgramArguments.ProgramAction.DOWNLOAD -> Downloader.downloadDocuments(AppConfig.config.downloadFrom)
 		}
 		
 		

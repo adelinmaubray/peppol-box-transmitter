@@ -1,19 +1,35 @@
 package be.compuwave.peppol_box_transmitter.config
 
+import be.compuwave.peppol_box_transmitter.utils.DATE_FORMAT
+import be.compuwave.peppol_box_transmitter.utils.print
 import be.compuwave.peppol_box_transmitter.utils.printWithTab
 import be.compuwave.peppol_box_transmitter.utils.printlnInRed
+import kotlinx.datetime.format.char
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format
+import kotlinx.datetime.format.DateTimeFormat
+import kotlinx.datetime.toJavaLocalDate
+import kotlinx.datetime.toLocalDate
+import kotlinx.datetime.toLocalDateTime
 import org.valiktor.ConstraintViolationException
+import org.valiktor.functions.isLessThan
 import org.valiktor.functions.isNotBlank
 import org.valiktor.functions.isWebsite
 import org.valiktor.validate
 import java.io.File
 import java.nio.file.Paths
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 data class ConfigModel(val testMode: Boolean,
 					   val baseUrl: String,
 					   val loggingDirectory: String,
 					   val inputDirectory: String,
 					   val outputDirectory: String,
+					   val downloadFrom: LocalDateTime,
+					   val downloadDirectory: String,
 					   val tenantId: String,
 					   val apiKey: String,
 					   val apiSecret: String) {
@@ -23,6 +39,8 @@ data class ConfigModel(val testMode: Boolean,
 		loggingDirectory: String? = null,
 		inputDirectory: String,
 		outputDirectory: String? = null,
+		downloadFrom: String,
+		downloadDirectory: String,
 		tenantId: String,
 		apiKey: String,
 		apiSecret: String,
@@ -33,6 +51,8 @@ data class ConfigModel(val testMode: Boolean,
 		loggingDirectory = loggingDirectory ?: "${Paths.get("").toAbsolutePath()}${File.separator}logs",
 		inputDirectory = inputDirectory,
 		outputDirectory = outputDirectory ?: "$inputDirectory${File.separator}sent",
+		downloadFrom = LocalDateTime.parse(downloadFrom.ifBlank { "2026-01-01 00:00:00" }, DATE_FORMAT),
+		downloadDirectory = downloadDirectory,
 		tenantId = tenantId,
 		apiKey = apiKey,
 		apiSecret = apiSecret
@@ -41,10 +61,15 @@ data class ConfigModel(val testMode: Boolean,
 	
 	init {
 		try {
+			
+			val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+			
 			validate(this) {
 				validate(ConfigModel::inputDirectory).isNotBlank()
 				validate(ConfigModel::outputDirectory).isNotBlank()
 				validate(ConfigModel::loggingDirectory).isNotBlank()
+				validate(ConfigModel::downloadFrom).isLessThan(now)
+				validate(ConfigModel::downloadDirectory).isNotBlank()
 				validate(ConfigModel::baseUrl).isNotBlank().isWebsite()
 				validate(ConfigModel::tenantId).isNotBlank()
 				validate(ConfigModel::apiKey).isNotBlank()
@@ -66,6 +91,8 @@ data class ConfigModel(val testMode: Boolean,
 	loggingDirectory: $loggingDirectory
 	inputDirectory: $inputDirectory
 	outputDirectory: $outputDirectory
+	downloadFrom: ${downloadFrom.print()}
+	downloadDirectory: $downloadDirectory
 	tenantId: xxx-xxx-xx (not shown in logs)
 	apiKey: xxx-xxx-xxx (not shown in logs)
 	apiSecret: xxx-xxx-xxx (not shown in logs)"""
