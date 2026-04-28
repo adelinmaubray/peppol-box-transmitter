@@ -39,5 +39,4 @@ object Sender {
 				AppConfig.config.testMode
 			)
 		)
-	
 }

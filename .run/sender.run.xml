@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="MainKt" type="JetRunConfigurationType" nameIsGenerated="true">
+  <configuration default="false" name="sender" type="JetRunConfigurationType">
     <option name="MAIN_CLASS_NAME" value="be.compuwave.peppol_box_transmitter.MainKt" />
     <module name="peppol-box-transmitter" />
-    <option name="PROGRAM_PARAMETERS" value="--properties=src/main/resources/compuwave.properties --action=toto" />
+    <option name="PROGRAM_PARAMETERS" value="--properties=src/main/resources/compuwave.properties --action=send" />
     <shortenClasspath name="NONE" />
     <method v="2">
       <option name="Make" enabled="true" />
