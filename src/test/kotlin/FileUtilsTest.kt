@@ -1,6 +1,7 @@
 import be.compuwave.peppol_box_transmitter.utils.getFilesInInputDirectory
 import be.compuwave.peppol_box_transmitter.utils.getPropertyFile
 import be.compuwave.peppol_box_transmitter.utils.moveFileToAnotherFolder
+import be.compuwave.peppol_box_transmitter.utils.writeContentToFile
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -89,5 +90,37 @@ class FileUtilsTest {
 	@Test
 	fun `move a file that does not exist`() {
 		assertFailsWith<java.nio.file.NoSuchFileException> { moveFileToAnotherFolder(File("does/not/exist"), "target/test") }
+	}
+
+	@Test
+	fun `save byte array to file`() {
+		// arrange
+		val directoryPath = "target/test/save"
+		val fileName = "testFile.txt"
+		val content = "Hello World".toByteArray()
+
+		// act
+		writeContentToFile(directoryPath, fileName, content)
+
+		// assert
+		val savedFile = File(directoryPath, fileName)
+		assertTrue(savedFile.exists())
+		assertContentEquals(content, savedFile.readBytes())
+	}
+
+	@Test
+	fun `save byte array to file with invalid directory path`() {
+		// arrange
+		val directoryPath = "target/test/invalid-dir"
+		val fileName = "testFile.txt"
+		val content = "Hello World".toByteArray()
+		
+		// create a file where the directory should be
+		File(directoryPath).createNewFile()
+
+		// act & assert
+		assertFails {
+			writeContentToFile(directoryPath, fileName, content)
+		}
 	}
 }
