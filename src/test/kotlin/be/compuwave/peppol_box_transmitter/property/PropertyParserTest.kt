@@ -1,4 +1,5 @@
-import be.compuwave.peppol_box_transmitter.property.PropertyParser
+package be.compuwave.peppol_box_transmitter.property
+
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.valiktor.ConstraintViolationException
 import java.io.File
@@ -26,7 +27,7 @@ class PropertyParserTest {
 			listOf("NotBlank", "NotBlank", "Website", "NotBlank", "NotBlank", "NotBlank"),
 			exception.constraintViolations.map { it.constraint.name })
 		assertEquals(
-			listOf("inputDirectory", "downloadDirectory",  "baseUrl", "tenantId", "apiKey", "apiSecret"),
+			listOf("inputDirectory", "downloadDirectory", "baseUrl", "tenantId", "apiKey", "apiSecret"),
 			exception.constraintViolations.map { it.property })
 	}
 }

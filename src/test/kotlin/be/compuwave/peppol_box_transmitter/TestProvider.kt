@@ -1,8 +1,6 @@
-package utils
+package be.compuwave.peppol_box_transmitter
 
 import be.compuwave.peppol_box_transmitter.config.ConfigModel
-
-import kotlinx.datetime.LocalDateTime
 
 fun provideValidConfig() = ConfigModel(
 	testMode = true,

@@ -1,4 +1,5 @@
-import be.compuwave.peppol_box_transmitter.arguments.ProgramArguments
+package be.compuwave.peppol_box_transmitter.argument
+
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

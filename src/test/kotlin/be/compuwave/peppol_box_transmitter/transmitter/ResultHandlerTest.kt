@@ -1,4 +1,5 @@
-import be.compuwave.peppol_box_transmitter.transmitter.ResultHandler
+package be.compuwave.peppol_box_transmitter.transmitter
+
 import org.openapitools.client.models.SendPeppolResult
 import kotlin.test.Test
 import kotlin.test.assertTrue

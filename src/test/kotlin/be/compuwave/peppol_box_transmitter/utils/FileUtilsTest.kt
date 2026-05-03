@@ -1,7 +1,5 @@
-import be.compuwave.peppol_box_transmitter.utils.getFilesInInputDirectory
-import be.compuwave.peppol_box_transmitter.utils.getPropertyFile
-import be.compuwave.peppol_box_transmitter.utils.moveFileToAnotherFolder
-import be.compuwave.peppol_box_transmitter.utils.writeContentToFile
+package be.compuwave.peppol_box_transmitter.utils
+
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertDoesNotThrow

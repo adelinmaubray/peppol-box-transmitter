@@ -1,5 +1,6 @@
+package be.compuwave.peppol_box_transmitter
+
 import be.compuwave.peppol_box_transmitter.config.AppConfig
-import be.compuwave.peppol_box_transmitter.main
 import be.compuwave.peppol_box_transmitter.transmitter.ApiProxy
 import io.mockk.every
 import io.mockk.mockk
@@ -8,7 +9,6 @@ import io.mockk.unmockkAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.openapitools.client.apis.PeppolBoxByFlexinaAPIApi
-import utils.provideValidConfig
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals

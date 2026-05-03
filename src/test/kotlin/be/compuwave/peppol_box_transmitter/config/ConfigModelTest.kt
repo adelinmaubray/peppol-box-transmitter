@@ -1,5 +1,5 @@
-import be.compuwave.peppol_box_transmitter.config.ConfigModel
-import kotlinx.datetime.LocalDateTime
+package be.compuwave.peppol_box_transmitter.config
+
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.valiktor.ConstraintViolationException
 import java.io.File
@@ -247,7 +247,7 @@ class ConfigModelTest {
 				apiSecret = VALID_API_SECRET
 			)
 		}
-
+		
 		assertEquals(ConfigModel::downloadDirectory.name, exception.constraintViolations.first().property)
 		assertEquals("NotBlank", exception.constraintViolations.first().constraint.name)
 	}

@@ -3,8 +3,6 @@ package be.compuwave.peppol_box_transmitter.property
 import be.compuwave.peppol_box_transmitter.config.AppConfig
 import be.compuwave.peppol_box_transmitter.config.ConfigModel
 import be.compuwave.peppol_box_transmitter.utils.printInCyan
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.toLocalDateTime
 import java.io.File
 import java.io.FileInputStream
 import java.util.*

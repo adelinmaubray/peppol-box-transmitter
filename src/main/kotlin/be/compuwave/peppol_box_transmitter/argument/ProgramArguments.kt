@@ -1,4 +1,4 @@
-package be.compuwave.peppol_box_transmitter.arguments
+package be.compuwave.peppol_box_transmitter.argument
 
 import be.compuwave.peppol_box_transmitter.utils.printInCyan
 import be.compuwave.peppol_box_transmitter.utils.printWithTab

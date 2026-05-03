@@ -1,13 +1,11 @@
 package be.compuwave.peppol_box_transmitter
 
-import be.compuwave.peppol_box_transmitter.arguments.ProgramArguments
+import be.compuwave.peppol_box_transmitter.argument.ProgramArguments
 import be.compuwave.peppol_box_transmitter.config.AppConfig
 import be.compuwave.peppol_box_transmitter.property.PropertyParser
 import be.compuwave.peppol_box_transmitter.transmitter.Downloader
 import be.compuwave.peppol_box_transmitter.transmitter.Sender
 import be.compuwave.peppol_box_transmitter.utils.*
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.Month
 
 fun main(args: Array<String>) {
 	
