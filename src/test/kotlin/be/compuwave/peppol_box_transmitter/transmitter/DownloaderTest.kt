@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test
 import org.openapitools.client.apis.PeppolBoxByFlexinaAPIApi
 import java.io.File
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class DownloaderTest {
 	
@@ -52,7 +53,7 @@ class DownloaderTest {
 		every { mockClient.downloadInboundDocumentXml(any()) } answers {
 			val id = it.invocation.args[0] as String
 			val file = File(downloadDir, "temp-$id.xml")
-			file.writeText("<xml>$id</xml>")
+			file.writeText("<root><id>$id</id><content>some content</content></root>")
 			file
 		}
 		
@@ -63,5 +64,12 @@ class DownloaderTest {
 		val fileNames = downloadedFiles.map { it.name }.toSet()
 		assert(fileNames.contains("valid-id-1.xml"))
 		assert(fileNames.contains("valid-id-2.xml"))
+		
+		// Check if XML is formatted (should start with <?xml and be pretty printed)
+		downloadedFiles.forEach { file ->
+			val content = file.readText()
+			assertTrue(content.startsWith("<?xml"), "File ${file.name} should start with XML declaration")
+			assertTrue(content.contains("\n"), "File ${file.name} should be pretty printed with new lines")
+		}
 	}
 }

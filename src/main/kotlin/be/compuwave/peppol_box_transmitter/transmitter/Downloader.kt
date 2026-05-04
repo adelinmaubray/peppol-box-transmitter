@@ -1,39 +1,32 @@
 package be.compuwave.peppol_box_transmitter.transmitter
 
 import be.compuwave.peppol_box_transmitter.config.AppConfig
-import be.compuwave.peppol_box_transmitter.utils.printlnInRed
-import be.compuwave.peppol_box_transmitter.utils.writeContentToFile
+import be.compuwave.peppol_box_transmitter.utils.*
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.toJavaLocalDateTime
-import java.time.ZoneId
+import java.io.File
 
 object Downloader {
 	
-	fun downloadDocuments(fromDate: LocalDateTime) {
-		val fromDateTime = fromDate
-			.toJavaLocalDateTime()
-			.atZone(ZoneId.systemDefault())
-			.toOffsetDateTime()
-		
-		val downloadLocation = AppConfig.config.downloadDirectory
-		
-		ApiProxy.client.listInboundDocuments(fromDateTime)
+	fun downloadDocuments(fromDate: LocalDateTime): Set<File> =
+		ApiProxy.client.listInboundDocuments(fromDate.toOffsetDateTime())
 			.asSequence()
 			.mapNotNull {
 				(it["id"] as? String).also { id ->
 					if (id == null) {
-						printlnInRed("Data from Peppol Box is not valid: documentId [${it["id"]}] is not a string")
+						printlnInRed("Data from Peppol Box is not valid: documentId [${it["id"]}] is not a string. Invoice will be ignored")
 					}
 				}
 			}
 			.map { Pair(it, ApiProxy.client.downloadInboundDocumentXml(it)) }
-			.forEach {
+			.map {
 				
 				val id = it.first
-				val rawDocument = it.second.readBytes()
+				val rawDocument = it.second
 				
-				writeContentToFile(downloadLocation, "$id.xml", rawDocument)
-				it.second.delete()
+				val formattedXml = formatXml(rawDocument.readText())
+				writeContentToFile(AppConfig.config.downloadDirectory, "$id.xml", formattedXml.toByteArray())
+					.also { if (!rawDocument.delete()) printlnInYellow("Failed to delete temporary file: $rawDocument") }
+				
 			}
-	}
+			.toSet()
 }

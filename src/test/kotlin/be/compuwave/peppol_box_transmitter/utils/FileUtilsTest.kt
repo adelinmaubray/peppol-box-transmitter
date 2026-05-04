@@ -121,4 +121,47 @@ class FileUtilsTest {
 			writeContentToFile(directoryPath, fileName, content)
 		}
 	}
+	
+	@Test
+	fun `format xml with indentation and new lines`() {
+		// arrange
+		val unformattedXml = "<root><child>value</child><child>another</child></root>"
+		
+		// act
+		val formattedXml = formatXml(unformattedXml)
+		
+		// assert
+		assertTrue(formattedXml.contains("<root>"))
+		assertTrue(formattedXml.contains("  <child>value</child>"))
+		assertTrue(formattedXml.contains("  <child>another</child>"))
+		assertTrue(formattedXml.contains("\n"))
+		assertTrue(formattedXml.startsWith("<?xml"))
+	}
+	
+	@Test
+	fun `format xml and remove empty lines`() {
+		// arrange
+		val xmlWithEmptyLines = "<root>\n\n  <child>value</child>\n\n</root>"
+		
+		// act
+		val formattedXml = formatXml(xmlWithEmptyLines)
+		
+		// assert
+		val lines = formattedXml.lines()
+		lines.forEach { line ->
+			assertTrue(line.isNotBlank(), "Line should not be blank: '$line'")
+		}
+	}
+	
+	@Test
+	fun `format invalid xml returns original`() {
+		// arrange
+		val invalidXml = "<root><child>value</child>" // missing closing tag
+		
+		// act
+		val result = formatXml(invalidXml)
+		
+		// assert
+		assertEquals(invalidXml, result)
+	}
 }

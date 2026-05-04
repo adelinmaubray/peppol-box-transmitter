@@ -1,8 +1,13 @@
 package be.compuwave.peppol_box_transmitter.utils
 
 import java.io.File
+import java.io.StringReader
+import java.io.StringWriter
 import java.nio.file.Files
-import java.nio.file.Paths
+import javax.xml.transform.OutputKeys
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.stream.StreamResult
+import javax.xml.transform.stream.StreamSource
 
 /**
  * Retrieves a property file from the specified file path.
@@ -88,15 +93,53 @@ fun moveFileToAnotherFolder(fileToMove: File, newDirectory: String): File {
  * @param directoryPath the path of the directory to save the file into
  * @param fileName the name of the file to be saved
  * @param content the content of the file as a ByteArray
+ *
+ * @return the file object representing the saved file
  */
-fun writeContentToFile(directoryPath: String, fileName: String, content: ByteArray) {
+fun writeContentToFile(directoryPath: String, fileName: String, content: ByteArray): File {
 	
 	val directory = File(directoryPath)
 	if (!directory.exists()) {
 		directory.mkdirs()
 	}
+	
+	val file = File(directoryPath, fileName)
+	Files.write(file.toPath(), content)
+	printlnInGreen("Document saved to ${file.path}")
+	
+	return file
+}
 
-	val filePath = Paths.get(directoryPath, fileName)
-	Files.write(filePath, content)
-	printlnInGreen("Document saved to $filePath")
+/**
+ * Formats an XML string with indentation and new lines.
+ *
+ * @param xml The XML string to format.
+ * @return The formatted XML string.
+ */
+fun formatXml(xml: String): String {
+	return try {
+		
+		val factory = TransformerFactory.newInstance()
+		// Set indentation
+		factory.setAttribute("indent-number", 2)
+		val transformer = factory.newTransformer()
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes")
+		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no")
+		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8")
+		
+		// The following property is needed for some transformer implementations to honor indentation
+		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
+		
+		val result = StreamResult(StringWriter())
+		val source = StreamSource(StringReader(xml))
+		transformer.transform(source, result)
+		
+		val formattedXml = result.writer.toString()
+		formattedXml.lines()
+			.filter { it.isNotBlank() }
+			.joinToString("\n")
+	} catch (e: Exception) {
+		printlnInRed("Error formatting XML: ${e.message}")
+		throw e
+	}
 }
