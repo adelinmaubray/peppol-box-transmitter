@@ -14,7 +14,8 @@
             <outputDirectory>/</outputDirectory>
             <includes>
                 <!-- macOS Apple Silicon launcher (if present) -->
-                <include>run-transmitter-macosx_aarch64.sh</include>
+                <include>run-sender-macosx_aarch64.sh</include>
+                <include>run-downloader-macosx_aarch64.sh</include>
                 <!-- macOS Apple Silicon runtime -->
                 <include>**/*-macosx_aarch64/**/*</include>
             </includes>

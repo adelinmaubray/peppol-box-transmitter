@@ -14,7 +14,8 @@
             <outputDirectory>/</outputDirectory>
             <includes>
                 <!-- Windows launcher (if present) -->
-                <include>run-transmitter-win_x64.bat</include>
+                <include>run-sender-win_x64.bat</include>
+                <include>run-downloader-win_x64.bat</include>
                 <!-- Windows x64 runtime -->
                 <include>**/*-win_x64/**/*</include>
             </includes>

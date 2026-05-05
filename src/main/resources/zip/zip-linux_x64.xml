@@ -14,7 +14,8 @@
             <outputDirectory>/</outputDirectory>
             <includes>
                 <!-- Linux launcher (if present) -->
-                <include>**/run-transmitter-linux_x64.sh</include>
+                <include>**/run-sender-linux_x64.sh</include>
+                <include>**/run-downloader-linux_x64.sh</include>
                 <!-- Linux x64 runtime -->
                 <include>**/*-linux_x64/**/*</include>
             </includes>
