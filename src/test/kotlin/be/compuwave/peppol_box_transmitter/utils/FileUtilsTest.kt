@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertDoesNotThrow
 import java.io.File
+import javax.xml.transform.TransformerException
 import kotlin.test.*
 
 class FileUtilsTest {
@@ -158,10 +159,7 @@ class FileUtilsTest {
 		// arrange
 		val invalidXml = "<root><child>value</child>" // missing closing tag
 		
-		// act
-		val result = formatXml(invalidXml)
-		
-		// assert
-		assertEquals(invalidXml, result)
+		// act & assert
+		assertFailsWith<TransformerException> { formatXml(invalidXml) }
 	}
 }
