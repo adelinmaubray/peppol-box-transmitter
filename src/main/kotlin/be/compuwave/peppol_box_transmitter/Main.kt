@@ -17,7 +17,8 @@ fun main(args: Array<String>) {
 		ProgramArguments.parseProgramArguments(args)
 		
 		// Load properties from file
-		PropertyParser.loadProperties(getPropertyFile(ProgramArguments.getPropertyFilePath()))
+		val propertiesFile = getPropertyFile(ProgramArguments.getPropertyFilePath())
+		PropertyParser.loadProperties(propertiesFile)
 		
 		// TODO move to a new orchestrator?
 		when (ProgramArguments.getAction()) {
@@ -29,7 +30,11 @@ fun main(args: Array<String>) {
 					.also { println() }
 					.forEach { moveFileToAnotherFolder(it, AppConfig.config.outputDirectory) }
 			
-			ProgramArguments.ProgramAction.DOWNLOAD -> Downloader.downloadDocuments(AppConfig.config.downloadFrom)
+			ProgramArguments.ProgramAction.DOWNLOAD ->
+				// Download documents from Peppol network
+				// And update DOWNLOAD_FROM property
+				Downloader.downloadDocuments(AppConfig.config.downloadFrom)
+					.also { PropertyParser.overrideDownloadFrom(propertiesFile, AppConfig.config.startTime) }
 		}
 		
 		

@@ -4,14 +4,9 @@ import be.compuwave.peppol_box_transmitter.utils.DATE_FORMAT
 import be.compuwave.peppol_box_transmitter.utils.print
 import be.compuwave.peppol_box_transmitter.utils.printWithTab
 import be.compuwave.peppol_box_transmitter.utils.printlnInRed
-import kotlinx.datetime.format.char
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.format
-import kotlinx.datetime.format.DateTimeFormat
-import kotlinx.datetime.toJavaLocalDate
-import kotlinx.datetime.toLocalDate
 import kotlinx.datetime.toLocalDateTime
 import org.valiktor.ConstraintViolationException
 import org.valiktor.functions.isLessThan
@@ -20,19 +15,18 @@ import org.valiktor.functions.isWebsite
 import org.valiktor.validate
 import java.io.File
 import java.nio.file.Paths
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
-data class ConfigModel(val testMode: Boolean,
-					   val baseUrl: String,
-					   val loggingDirectory: String,
-					   val inputDirectory: String,
-					   val outputDirectory: String,
-					   val downloadFrom: LocalDateTime,
-					   val downloadDirectory: String,
-					   val tenantId: String,
-					   val apiKey: String,
-					   val apiSecret: String) {
+data class ConfigModel(val startTime: LocalDateTime,
+                       val testMode: Boolean,
+                       val baseUrl: String,
+                       val loggingDirectory: String,
+                       val inputDirectory: String,
+                       val outputDirectory: String,
+                       val downloadFrom: LocalDateTime,
+                       val downloadDirectory: String,
+                       val tenantId: String,
+                       val apiKey: String,
+                       val apiSecret: String) {
 	
 	constructor(
 		baseUrl: String,
@@ -46,6 +40,7 @@ data class ConfigModel(val testMode: Boolean,
 		apiSecret: String,
 		testMode: Boolean,
 	) : this(
+		startTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
 		testMode = testMode,
 		baseUrl = baseUrl,
 		loggingDirectory = loggingDirectory ?: "${Paths.get("").toAbsolutePath()}${File.separator}logs",

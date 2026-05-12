@@ -2,9 +2,12 @@ package be.compuwave.peppol_box_transmitter.property
 
 import be.compuwave.peppol_box_transmitter.config.AppConfig
 import be.compuwave.peppol_box_transmitter.config.ConfigModel
+import be.compuwave.peppol_box_transmitter.utils.print
 import be.compuwave.peppol_box_transmitter.utils.printInCyan
+import kotlinx.datetime.LocalDateTime
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.util.*
 
 /**
@@ -43,5 +46,21 @@ object PropertyParser {
 		printInCyan("Properties successfully loaded:")
 		println(AppConfig.config.toString())
 		println()
+	}
+	
+	fun overrideDownloadFrom(propertiesFile: File, dateTime: LocalDateTime) {
+		
+		val formattedDate = dateTime.print()
+		
+		val properties = Properties()
+		properties.load(FileInputStream(propertiesFile))
+		properties.setProperty(ApplicationProperty.DOWNLOAD_FROM.name, formattedDate)
+		properties.store(FileOutputStream(propertiesFile), null)
+		
+		// replace `\:`, written by .store() method to `:`
+		val unescaped = propertiesFile.readText().replace("""\:""", ":")
+		propertiesFile.writeText(unescaped)
+		
+		printInCyan("Updating DOWNLOAD_FROM property to: $formattedDate")
 	}
 }
