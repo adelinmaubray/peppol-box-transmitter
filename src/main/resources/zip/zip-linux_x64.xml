@@ -13,7 +13,7 @@
             <directory>${project.basedir}/src/main/resources/java</directory>
             <outputDirectory>/</outputDirectory>
             <includes>
-                <!-- Linux launcher (if present) -->
+                <!-- Linux launcher -->
                 <include>**/run-sender-linux_x64.sh</include>
                 <include>**/run-downloader-linux_x64.sh</include>
                 <!-- Linux x64 runtime -->

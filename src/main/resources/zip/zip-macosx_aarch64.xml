@@ -13,7 +13,7 @@
             <directory>${project.basedir}/src/main/resources/java</directory>
             <outputDirectory>/</outputDirectory>
             <includes>
-                <!-- macOS Apple Silicon launcher (if present) -->
+                <!-- macOS Apple Silicon launcher -->
                 <include>run-sender-macosx_aarch64.sh</include>
                 <include>run-downloader-macosx_aarch64.sh</include>
                 <!-- macOS Apple Silicon runtime -->
