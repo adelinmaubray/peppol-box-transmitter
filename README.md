@@ -26,7 +26,9 @@ Peppol Box API, then moves successfully transmitted files to an output folder.
 - CLI argument parser: ProgramArguments (expects --properties=...)
 - Configuration model: ConfigModel loaded via PropertyParser from .properties file
 - File utilities: reads XML files from INPUT_DIRECTORY and moves them after successful transmission
-- Transmitter: sends documents to the Peppol Box API
+- `Transmitter`:
+	- `Sender`: sends given documents to the Peppol Box API
+	- `Downloader`: download documents from a specific date from Peppol Box API
 
 ## Configuration (.properties)
 
@@ -114,38 +116,35 @@ The project assembles a cross-platform ZIP that bundles platform-specific JREs a
 	- The fat JAR: peppol-box-transmitter-<version>-jar-with-dependencies.jar
 	- Platform JRE folders (e.g., zulu21...-linux_x64, ...-macosx_x64, ...-macosx_aarch64, ...-win_x64)
 	- Run scripts:
-		- Windows: `run-transmitter-win_x64.bat`
-		- Linux: `run-transmitter-linux_x64`
-		- macOS (Intel): `run-transmitter-macosx_x64`
-		- macOS (Apple Silicon): `run-transmitter-macosx_aarch64`
+		- Windows: `run-sender|downloader--win_x64.bat`
+		- Linux: `run-sender|downloader--linux_x64`
+		- macOS (Intel): `run-sender|downloader--macosx_x64`
+		- macOS (Apple Silicon): `run-sender|downloader--macosx_aarch64`
 
 3) Run the script for your OS, passing the path to your .properties file:
 
 - Windows (x64):
   ```bat
-  run-transmitter-win_x64.bat path\to\file.properties
+  run-sender|downloader--win_x64.bat path\to\file.properties
   ```
 - Linux (x64):
   ```bash
-  ./run-transmitter-linux_x64 path/to/file.properties
-  ```
-- macOS (Intel):
-  ```bash
-  ./run-transmitter-macosx_x64 path/to/file.properties
+  ./run-sender|downloader--linux_x64 path/to/file.properties
   ```
 - macOS (Apple Silicon):
   ```bash
-  ./run-transmitter-macosx_aarch64 path/to/file.properties
+  ./run-sender|downloader--macosx_aarch64 path/to/file.properties
   ```
 
 Notes:
 
 - On Linux/macOS you may need to allow execute permission once:
   ```bash
-  chmod +x run-transmitter-*
+  chmod +x run-sender|downloader--*
   ```
 - The scripts automatically select the bundled JRE and launch the fat JAR.
-- Ensure the INPUT_DIRECTORY exists and contains .xml files; successful files are moved to OUTPUT_DIRECTORY.
+- To send documents, ensure the INPUT_DIRECTORY exists and contains .xml files; successful files are moved to
+  OUTPUT_DIRECTORY.
 
 ## Troubleshooting
 
