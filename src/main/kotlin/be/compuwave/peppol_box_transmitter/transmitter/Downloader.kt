@@ -29,4 +29,5 @@ object Downloader {
 				
 			}
 			.toSet()
+			.also { println() }
 }
