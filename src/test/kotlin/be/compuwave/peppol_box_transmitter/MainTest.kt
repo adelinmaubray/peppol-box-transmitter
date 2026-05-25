@@ -2,10 +2,14 @@ package be.compuwave.peppol_box_transmitter
 
 import be.compuwave.peppol_box_transmitter.config.AppConfig
 import be.compuwave.peppol_box_transmitter.transmitter.ApiProxy
+import be.compuwave.peppol_box_transmitter.utils.print
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.openapitools.client.apis.PeppolBoxByFlexinaAPIApi
@@ -102,6 +106,7 @@ class MainTest {
 		
 		val properties = Properties().also { it.load(propertyFile.inputStream()) }
 		val downloadFrom = properties.getProperty("DOWNLOAD_FROM")
-		assertTrue(downloadFrom.startsWith("2026-05-19"), "DOWNLOAD_FROM should be updated to today's date")
+		val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+		assertTrue(downloadFrom.startsWith(today.print()), "DOWNLOAD_FROM should be updated to today's date")
 	}
 }
