@@ -10,7 +10,8 @@ src/main/resources/examples/
 ###
 
 ### IntelliJ IDEA ###
-.idea
+.idea/
+.junie/
 *.iws
 *.iml
 *.ipr
