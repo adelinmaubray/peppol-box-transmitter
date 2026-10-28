@@ -28,7 +28,7 @@ object PropertyParser {
 	fun loadProperties(propertiesFile: File) {
 		
 		val properties = Properties()
-		properties.load(FileInputStream(propertiesFile))
+		FileInputStream(propertiesFile).use { properties.load(it) }
 		
 		AppConfig.config = ConfigModel(
 			testMode = properties.getProperty(ApplicationProperty.TEST_MODE).toBoolean(),
@@ -53,9 +53,9 @@ object PropertyParser {
 		val formattedDate = dateTime.print()
 		
 		val properties = Properties()
-		properties.load(FileInputStream(propertiesFile))
+		FileInputStream(propertiesFile).use { properties.load(it) }
 		properties.setProperty(ApplicationProperty.DOWNLOAD_FROM.name, formattedDate)
-		properties.store(FileOutputStream(propertiesFile), null)
+		FileOutputStream(propertiesFile).use { properties.store(it, null) }
 		
 		// replace `\:`, written by .store() method to `:`
 		val unescaped = propertiesFile.readText().replace("""\:""", ":")

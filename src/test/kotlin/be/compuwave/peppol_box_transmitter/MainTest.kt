@@ -103,7 +103,7 @@ class MainTest {
 		assertTrue(propertyFile.exists())
 		assertEquals(3, downloadFolder.listFiles()?.size)
 		
-		val properties = Properties().also { it.load(propertyFile.inputStream()) }
+		val properties = Properties().also { propertyFile.inputStream().use { s -> it.load(s) } }
 		val updatedDownloadFrom = properties.getProperty("DOWNLOAD_FROM")
 		val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString() // YYYY-MM-DD
 		assertTrue(updatedDownloadFrom.startsWith(today), "DOWNLOAD_FROM should be updated to today's date")
