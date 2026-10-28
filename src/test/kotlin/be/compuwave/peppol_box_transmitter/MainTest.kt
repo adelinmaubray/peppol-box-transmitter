@@ -6,6 +6,8 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.openapitools.client.apis.PeppolBoxByFlexinaAPIApi
@@ -14,6 +16,7 @@ import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.time.Clock
 
 class MainTest {
 	
@@ -80,7 +83,7 @@ class MainTest {
 	}
 	
 	@Test
-	fun `all sent process`() {
+	fun `entire sent process`() {
 		
 		val arguments = arrayOf("--properties=target/test/valid.properties", "--action=send")
 		main(arguments)
@@ -92,7 +95,7 @@ class MainTest {
 	}
 	
 	@Test
-	fun `all download process`() {
+	fun `entire download process`() {
 		
 		val arguments = arrayOf("--properties=target/test/valid.properties", "--action=download")
 		main(arguments)
@@ -101,7 +104,8 @@ class MainTest {
 		assertEquals(3, downloadFolder.listFiles()?.size)
 		
 		val properties = Properties().also { it.load(propertyFile.inputStream()) }
-		val downloadFrom = properties.getProperty("DOWNLOAD_FROM")
-		assertTrue(downloadFrom.startsWith("2026-05-19"), "DOWNLOAD_FROM should be updated to today's date")
+		val updatedDownloadFrom = properties.getProperty("DOWNLOAD_FROM")
+		val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString() // YYYY-MM-DD
+		assertTrue(updatedDownloadFrom.startsWith(today), "DOWNLOAD_FROM should be updated to today's date")
 	}
 }

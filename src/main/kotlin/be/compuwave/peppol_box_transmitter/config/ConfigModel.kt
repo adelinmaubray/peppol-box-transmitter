@@ -4,7 +4,6 @@ import be.compuwave.peppol_box_transmitter.utils.DATE_FORMAT
 import be.compuwave.peppol_box_transmitter.utils.print
 import be.compuwave.peppol_box_transmitter.utils.printWithTab
 import be.compuwave.peppol_box_transmitter.utils.printlnInRed
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -15,6 +14,7 @@ import org.valiktor.functions.isWebsite
 import org.valiktor.validate
 import java.io.File
 import java.nio.file.Paths
+import kotlin.time.Clock
 
 data class ConfigModel(val startTime: LocalDateTime,
                        val testMode: Boolean,
