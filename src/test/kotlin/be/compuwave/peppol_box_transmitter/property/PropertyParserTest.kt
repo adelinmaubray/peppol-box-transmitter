@@ -49,7 +49,7 @@ class PropertyParserTest {
 		
 		// assert
 		val properties = Properties()
-		properties.load(FileInputStream(tempFile))
+		FileInputStream(tempFile).use { properties.load(it) }
 		assertEquals(newDateTime.print(), properties.getProperty(ApplicationProperty.DOWNLOAD_FROM.name))
 		
 		tempFile.delete()
